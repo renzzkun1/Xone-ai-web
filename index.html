@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NexusAI Dynamic Engine Pro</title>
+    <title>Xone AI Dynamic Engine Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -73,8 +73,7 @@
             position: absolute; 
             top: 0; 
             left: 0; 
-            right: 0; 
-            bottom: 0; 
+            right: 0;  bottom: 0; 
             background: rgba(0, 0, 0, 0.6); 
             backdrop-filter: blur(4px); 
             -webkit-backdrop-filter: blur(4px); 
@@ -288,7 +287,7 @@
 
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
-            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space</span>
+            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Xone Space</span>
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
@@ -329,7 +328,7 @@
         <div class="chat-header">
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
             <div class="header-title-info">
-                <h1 id="headerEngineTitle">NexusAI Workspace</h1>
+                <h1 id="headerEngineTitle">Xone AI Workspace</h1>
             </div>
         </div>
 
@@ -376,10 +375,11 @@
     };
 
     let temporaryImgUrl = '';
-    
-    // STRUKTUR MULTI CHAT DATABASE
     let semuaSesiChat = {}; 
     let idSesiAktif = '';
+
+    // SYSTEM IDENTITY & CONTEXT PROMPT MENGINGAT NAMA
+    const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini! Jika pengguna menanyakan siapa pembuatmu atau siapa yang membuatmu, jawablah dengan bangga bahwa kamu dikembangkan oleh RenzzAiHost tanpa melupakan atau mengesampingkan topik pembicaraan/konteks yang saat ini sedang kalian bahas bersama. Selalu ingat nama pengguna jika mereka memberitahu namamu atau membicarakan nama seseorang.";
 
     function toggleSidebar() { 
         document.getElementById('sidebar').classList.toggle('active'); 
@@ -402,7 +402,7 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             pasangBackground(e.target.result);
-            localStorage.setItem('nexus_custom_bg', e.target.result);
+            localStorage.setItem('xone_custom_bg', e.target.result);
             closeAllPanels();
         };
         reader.readAsDataURL(file);
@@ -448,11 +448,9 @@
         return formatted.replace(/\n/g, '<br>');
     }
 
-    // ================= DYNAMIC MULTI-CHAT CORE ENGINE =================
-    
     function inisialisasiDatabaseMultiChat() {
-        const localChats = localStorage.getItem('nexus_multi_chats');
-        const localActiveId = localStorage.getItem('nexus_active_session_id');
+        const localChats = localStorage.getItem('xone_multi_chats');
+        const localActiveId = localStorage.getItem('xone_active_session_id');
 
         if (localChats) {
             semuaSesiChat = JSON.parse(localChats);
@@ -463,7 +461,7 @@
             idSesiAktif = 'session_' + Date.now();
             semuaSesiChat[idSesiAktif] = {
                 title: "Obrolan Baru",
-                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan baru siap digunakan. Riwayat obrolan ini akan tersimpan terpisah di sidebar kiri.' }]
+                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan Xone AI siap digunakan. Riwayat obrolan aman tersimpan di sidebar.' }]
             };
             simpanKeLocalStorage();
         }
@@ -476,7 +474,7 @@
         idSesiAktif = 'session_' + Date.now();
         semuaSesiChat[idSesiAktif] = {
             title: "Obrolan Baru",
-            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru. Silakan ketik perintah apa saja.' }]
+            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru. Xone AI siap menerima perintah.' }]
         };
         simpanKeLocalStorage();
         segarkanTampilanSidebar();
@@ -486,7 +484,7 @@
 
     function gantiSesiAktif(idSesi) {
         idSesiAktif = idSesi;
-        localStorage.setItem('nexus_active_session_id', idSesiAktif);
+        localStorage.setItem('xone_active_session_id', idSesiAktif);
         segarkanTampilanSidebar();
         tampilkanPesanSesiAktif();
         closeAllPanels();
@@ -511,15 +509,15 @@
     function hapusSeluruhSesiDatabase() {
         if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan tanpa sisa?")) {
             semuaSesiChat = {};
-            localStorage.removeItem('nexus_multi_chats');
-            localStorage.removeItem('nexus_active_session_id');
+            localStorage.removeItem('xone_multi_chats');
+            localStorage.removeItem('xone_active_session_id');
             buatSesiObrolanBaru();
         }
     }
 
     function simpanKeLocalStorage() {
-        localStorage.setItem('nexus_multi_chats', JSON.stringify(semuaSesiChat));
-        localStorage.setItem('nexus_active_session_id', idSesiAktif);
+        localStorage.setItem('xone_multi_chats', JSON.stringify(semuaSesiChat));
+        localStorage.setItem('xone_active_session_id', idSesiAktif);
     }
 
     function segarkanTampilanSidebar() {
@@ -569,8 +567,6 @@
         simpanKeLocalStorage();
     }
 
-    // ====================================================================
-
     function simpanPengaturanKonfigurasi() {
         const config = {
             provider: document.getElementById('activeProvider').value,
@@ -579,11 +575,11 @@
             geminiKey: document.getElementById('sidebarGeminiKey').value,
             mistralKey: document.getElementById('sidebarMistralKey').value
         };
-        localStorage.setItem('nexus_engine_config', JSON.stringify(config));
+        localStorage.setItem('xone_engine_config', JSON.stringify(config));
     }
 
     function muatPengaturanKonfigurasi() {
-        const savedConfig = localStorage.getItem('nexus_engine_config');
+        const savedConfig = localStorage.getItem('xone_engine_config');
         if(savedConfig) {
             const config = JSON.parse(savedConfig);
             document.getElementById('activeProvider').value = config.provider;
@@ -593,6 +589,50 @@
             document.getElementById('sidebarGeminiKey').value = config.geminiKey || '';
             document.getElementById('sidebarMistralKey').value = config.mistralKey || '';
         }
+    }
+
+    // MEMBANGUN RIWAYAT CONTEXT/MEMORI UNTUK API CALL
+    function bangunPayloadRiwayat(promptTerbaru, provider) {
+        let contextualMessages = [];
+        
+        if (provider === 'gemini') {
+            // Untuk Gemini, instruksi dimasukkan sebagai role user/model di awal chat
+            contextualMessages.push({ role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] });
+            contextualMessages.push({ role: "model", parts: [{ text: "Baik, saya mengerti. Saya adalah Xone AI yang diciptakan oleh RenzzAiHost dan akan selalu mengingat memori ini beserta konteks obrolan kita." }] });
+            
+            if (semuaSesiChat[idSesiAktif]) {
+                semuaSesiChat[idSesiAktif].messages.forEach(msg => {
+                    // Skip sisa text bawaan sistem agar memori murni dari chat user
+                    if (msg.infoText === "System Engine") return;
+                    let cleanText = msg.text.replace(/<[^>]*>/g, ''); 
+                    
+                    if (msg.sender === 'user') {
+                        contextualMessages.push({ role: "user", parts: [{ text: cleanText }] });
+                    } else if (msg.sender === 'ai') {
+                        contextualMessages.push({ role: "model", parts: [{ text: cleanText }] });
+                    }
+                });
+            }
+            contextualMessages.push({ role: "user", parts: [{ text: promptTerbaru }] });
+        } else {
+            // Untuk OpenAI standard format (Groq & Mistral) menggunakan system role
+            contextualMessages.push({ role: "system", content: SYSTEM_INSTRUCTION });
+            
+            if (semuaSesiChat[idSesiAktif]) {
+                semuaSesiChat[idSesiAktif].messages.forEach(msg => {
+                    if (msg.infoText === "System Engine") return;
+                    let cleanText = msg.text.replace(/<[^>]*>/g, '');
+                    
+                    if (msg.sender === 'user') {
+                        contextualMessages.push({ role: "user", content: cleanText });
+                    } else if (msg.sender === 'ai') {
+                        contextualMessages.push({ role: "assistant", content: cleanText });
+                    }
+                });
+            }
+            contextualMessages.push({ role: "user", content: promptTerbaru });
+        }
+        return contextualMessages;
     }
 
     async function handleSendMessage() {
@@ -608,7 +648,12 @@
             userBubbleContent = `<img src="${temporaryImgUrl}" style="max-width:100%; max-height:180px; border-radius:10px; margin-bottom:6px; display:block;">${prompt}`;
         }
 
+        // Tampilkan pesan user ke layar & simpan db lokal sebelum API call
         appendMessage('user', 'Kamu', userBubbleContent);
+        
+        // Membangun memori jangka pendek sebelum pesan saat ini masuk ke database history lokal
+        let payloadChat = bangunPayloadRiwayat(prompt, provider);
+        
         simpanPesanKeSesi('user', 'Kamu', userBubbleContent);
         
         textInput.value = '';
@@ -630,24 +675,31 @@
 
         try {
             let response, data, aiText = '';
+            
             if (provider === 'groq') {
                 response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                    body: JSON.stringify({ model: model, messages: payloadChat })
                 });
                 data = await response.json();
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
+                
             } else if (provider === 'gemini') {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-                response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+                response = await fetch(url, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ contents: payloadChat }) 
+                });
                 data = await response.json();
                 if(response.ok) aiText = data.candidates[0].content.parts[0].text; else throw new Error(data.error?.message);
+                
             } else if (provider === 'mistral') {
                 response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                    body: JSON.stringify({ model: model, messages: payloadChat })
                 });
                 data = await response.json();
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
@@ -674,7 +726,7 @@
     }
 
     window.onload = function() {
-        const savedBg = localStorage.getItem('nexus_custom_bg');
+        const savedBg = localStorage.getItem('xone_custom_bg');
         if (savedBg) pasangBackground(savedBg);
         
         switchProvider();

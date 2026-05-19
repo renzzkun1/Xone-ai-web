@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NexusAI Dynamic Engine Pro V2 - Fix Button</title>
+    <title>NexusAI Dynamic Engine Pro V3 - Absolute Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -250,32 +250,34 @@
 <body>
 
 <div class="app-container">
-    <div class="sidebar-overlay" id="overlay" onclick="closeAllPanels()"></div>
+    <!-- OVERLAY UTAMA -->
+    <div class="sidebar-overlay" id="overlay"></div>
 
+    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
-            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space v2</span>
-            <button type="button" class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space v3</span>
+            <button type="button" class="menu-toggle-btn" id="closeSidebarXBtn"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <button type="button" class="new-chat-btn" onclick="buatSesiObrolanBaru()"><i class="fa-solid fa-plus"></i> Obrolan Baru</button>
+        <button type="button" class="new-chat-btn" id="newChatSessionBtn"><i class="fa-solid fa-plus"></i> Obrolan Baru</button>
 
         <div style="font-size:12px; font-weight:600; padding:4px; color:var(--text-muted); margin-top: 8px;">Percakapan Terbaru</div>
         
         <div class="chat-history-list" id="historyContainer"></div>
 
-        <button type="button" class="clear-chat-btn" onclick="hapusSeluruhSesiDatabase()"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua Sesi</button>
+        <button type="button" class="clear-chat-btn" id="clearAllDatabaseBtn"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua Sesi</button>
         
         <div class="config-card" style="margin-top:auto">
             <h3><i class="fa-solid fa-palette"></i> Tampilan Background</h3>
-            <button type="button" class="bg-picker-btn" onclick="document.getElementById('bgFileInput').click()"><i class="fa-solid fa-image"></i> Pilih Foto dari HP</button>
-            <input type="file" id="bgFileInput" accept="image/*" style="display: none;" onchange="gantiBackgroundGokil(this)">
+            <button type="button" class="bg-picker-btn" id="triggerBgFileBtn"><i class="fa-solid fa-image"></i> Pilih Foto dari HP</button>
+            <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
         </div>
 
         <div class="config-card">
             <h3><i class="fa-solid fa-sliders"></i> Engine Core Setting</h3>
             <label>Core Provider:</label>
-            <select id="activeProvider" onchange="switchProvider()">
+            <select id="activeProvider">
                 <option value="groq">Groq Cloud</option>
                 <option value="gemini">Google Gemini AI</option>
                 <option value="mistral">Mistral AI (Official)</option>
@@ -287,58 +289,58 @@
             <div id="input-gemini-group" style="display:none;"><label>Gemini API Key:</label><input type="password" id="sidebarGeminiKey" placeholder="AIzaSy..." oninput="simpanPengaturanKonfigurasi()"></div>
             <div id="input-mistral-group" style="display:none;"><label>Mistral API Key:</label><input type="password" id="sidebarMistralKey" placeholder="la_..." oninput="simpanPengaturanKonfigurasi()"></div>
             
-            <button type="button" class="save-btn" onclick="simpanPengaturanKonfigurasi(); alert('Parameter API & Model disimpan!'); closeAllPanels();">Terapkan Parameter</button>
+            <button type="button" class="save-btn" id="applyConfigurationBtn">Terapkan Parameter</button>
         </div>
     </div>
 
     <div class="chat-area">
         <div class="chat-header">
-            <button type="button" class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <button type="button" class="menu-toggle-btn" id="menuToggleBarBtn"><i class="fa-solid fa-bars"></i></button>
             <div class="header-title-info">
                 <h1 id="headerEngineTitle">NexusAI Workspace</h1>
             </div>
         </div>
 
-        <!-- AI ENGINE MODE CONTROLLER -->
+        <!-- MODE CONTROLLER -->
         <div class="mode-container">
-            <button type="button" class="mode-pill active" data-mode="normal" onclick="switchAIMode('normal')"><i class="fa-solid fa-message"></i> AI Normal Chat</button>
-            <button type="button" class="mode-pill" data-mode="roblox" onclick="switchAIMode('roblox')"><i class="fa-solid fa-gamepad"></i> Roblox Studio Expert</button>
-            <button type="button" class="mode-pill" data-mode="coding" onclick="switchAIMode('coding')"><i class="fa-solid fa-code"></i> Coding Program</button>
+            <button type="button" class="mode-pill active" data-mode="normal"><i class="fa-solid fa-message"></i> AI Normal Chat</button>
+            <button type="button" class="mode-pill" data-mode="roblox"><i class="fa-solid fa-gamepad"></i> Roblox Studio Expert</button>
+            <button type="button" class="mode-pill" data-mode="coding"><i class="fa-solid fa-code"></i> Coding Program</button>
         </div>
 
         <div class="chat-messages" id="chatBox"></div>
 
-        <!-- GLOWING LOADING LINE INTERACTIVE -->
         <div class="glow-loading" id="glowLoadingLine"></div>
 
         <div class="chat-input-container">
             <div class="preview-box" id="imagePreviewBox">
-                <span class="close-preview" onclick="batalUnggahFoto()"><i class="fa-solid fa-xmark"></i></span>
+                <span class="close-preview" id="cancelImageUploadBtn"><i class="fa-solid fa-xmark"></i></span>
                 <img src="" id="imagePreviewSrc" class="preview-img">
             </div>
-            <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;" onchange="prosesFileFoto(this)">
+            <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;">
 
             <div class="input-wrapper">
-                <button type="button" class="plus-btn" onclick="toggleBottomSheet()"><i class="fa-solid fa-plus"></i></button>
+                <button type="button" class="plus-btn" id="plusMenuBtn"><i class="fa-solid fa-plus"></i></button>
                 <input type="text" id="userInputMessage" placeholder="Ketik pesan di sini...">
-                <button type="button" class="send-btn-paper" onclick="handleSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <button type="button" class="send-btn-paper" id="sendPayloadBtn"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
+        <!-- BOTTOM SHEET -->
         <div class="bottom-sheet" id="bottomSheet">
             <div class="sheet-handle"></div>
             <div class="media-grid">
-                <div class="media-item" onclick="bukaGaleri()"><div class="media-icon-wrapper"><i class="fa-solid fa-camera" style="color:#f43f5e"></i></div><span style="font-size:12px;">Kamera</span></div>
-                <div class="media-item" onclick="bukaGaleri()"><div class="media-icon-wrapper"><i class="fa-solid fa-image" style="color:#3b82f6"></i></div><span style="font-size:12px;">Galeri</span></div>
-                <div class="media-item" onclick="alert('Membuka File Dokumen')"><div class="media-icon-wrapper"><i class="fa-solid fa-paperclip" style="color:#10b981"></i></div><span style="font-size:12px;">File</span></div>
-                <div class="media-item" onclick="alert('Menghubungkan Google Drive')"><div class="media-icon-wrapper"><i class="fa-solid fa-cloud" style="color:#eab308"></i></div><span style="font-size:12px;">Drive</span></div>
+                <div class="media-item" id="mediaKameraBtn"><div class="media-icon-wrapper"><i class="fa-solid fa-camera" style="color:#f43f5e"></i></div><span style="font-size:12px;">Kamera</span></div>
+                <div class="media-item" id="mediaGaleriBtn"><div class="media-icon-wrapper"><i class="fa-solid fa-image" style="color:#3b82f6"></i></div><span style="font-size:12px;">Galeri</span></div>
+                <div class="media-item" id="mediaFileBtn"><div class="media-icon-wrapper"><i class="fa-solid fa-paperclip" style="color:#10b981"></i></div><span style="font-size:12px;">File</span></div>
+                <div class="media-item" id="mediaDriveBtn"><div class="media-icon-wrapper"><i class="fa-solid fa-cloud" style="color:#eab308"></i></div><span style="font-size:12px;">Drive</span></div>
             </div>
             <hr style="border:none; border-top:1px solid var(--glass-border)">
             <div class="sheet-section-title">Alat Extra</div>
             <div class="tools-list">
-                <div class="tools-item" onclick="alert('Fitur Buat Gambar Siap Diintegrasi!')"><div class="tools-left"><i class="fa-solid fa-wand-magic-sparkles"></i> Buat gambar</div></div>
-                <div class="tools-item" onclick="alert('Fitur Buat Musik Siap Diintegrasi!')"><div class="tools-left"><i class="fa-solid fa-music"></i> Buat musik</div><span class="badge-new">Baru</span></div>
-                <div class="tools-item" onclick="alert('Membuka Modul Deep Research')"><div class="tools-left"><i class="fa-solid fa-compass"></i> Deep Research</div></div>
+                <div class="tools-item" id="toolDrawBtn"><div class="tools-left"><i class="fa-solid fa-wand-magic-sparkles"></i> Buat gambar</div></div>
+                <div class="tools-item" id="toolMusicBtn"><div class="tools-left"><i class="fa-solid fa-music"></i> Buat musik</div><span class="badge-new">Baru</span></div>
+                <div class="tools-item" id="toolResearchBtn"><div class="tools-left"><i class="fa-solid fa-compass"></i> Deep Research</div></div>
             </div>
         </div>
     </div>
@@ -358,37 +360,104 @@
 
     const systemPrompts = {
         normal: "Kamu adalah NexusAI, asisten AI pintar, interaktif, ramah, dan sangat membantu.",
-        roblox: "Kamu adalah Expert Game Developer Roblox Studio. Berikan kode script Luau yang bersih, efisien, jelaskan sistem grinding, crafting, dataStore, atau kustomisasi part secara mendalam sesuai standar industri Roblox.",
-        coding: "Kamu adalah Software Engineer Senior. Berikan arsitektur kode pemrograman terbaik, bersih (Clean Code), tangani error handling dengan baik, dan jelaskan logika baris per baris secara teknis."
+        roblox: "Kamu adalah Expert Game Developer Roblox Studio. Berikan kode script Luau yang bersih, efisien, jelaskan sistem grinding, crafting, dataStore, atau kustomisasi part secara mendalam.",
+        coding: "Kamu adalah Software Engineer Senior. Berikan arsitektur kode pemrograman terbaik, bersih (Clean Code), tangani error handling dengan baik."
     };
 
-    function toggleSidebar() { 
-        document.getElementById('sidebar').classList.toggle('active'); 
-        document.getElementById('overlay').classList.toggle('active'); 
+    // MANAGEMENT PANEL INTERFACE (PURE JS EVENT LISTENERS WITH STOP PROPAGATION)
+    function openSidebar() {
+        document.getElementById('sidebar').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
     }
-    function toggleBottomSheet() {
-        document.getElementById('bottomSheet').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
+    function openBottomSheet() {
+        document.getElementById('bottomSheet').classList.add('active');
+        document.getElementById('overlay').classList.add('active');
     }
     function closeAllPanels() {
         document.getElementById('sidebar').classList.remove('active');
         document.getElementById('bottomSheet').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
     }
-    
-    // FIX KLIK: Jalankan buka galeri tanpa ke-interupsi penutupan panel berbarengan
-    function bukaGaleri() { 
-        document.getElementById('hiddenFileInput').click(); 
-        setTimeout(closeAllPanels, 300);
+
+    function bindingCoreUserInteractions() {
+        // Overlay Click
+        document.getElementById('overlay').addEventListener('click', function(e) {
+            closeAllPanels();
+        });
+
+        // Toggle Buttons Header & Sidebar
+        document.getElementById('menuToggleBarBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); openSidebar();
+        });
+        document.getElementById('closeSidebarXBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); closeAllPanels();
+        });
+        document.getElementById('plusMenuBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); openBottomSheet();
+        });
+
+        // Bottom Sheet Media & Tools Click Handler Fix
+        document.getElementById('mediaKameraBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); document.getElementById('hiddenFileInput').click(); closeAllPanels();
+        });
+        document.getElementById('mediaGaleriBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); document.getElementById('hiddenFileInput').click(); closeAllPanels();
+        });
+        document.getElementById('mediaFileBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('File Dokumen!'); });
+        document.getElementById('mediaDriveBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Google Drive Terhubung!'); });
+        document.getElementById('toolDrawBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Fitur Gambar Siap Diintegrasi!'); });
+        document.getElementById('toolMusicBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Fitur Musik Siap Diintegrasi!'); });
+        document.getElementById('toolResearchBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Deep Research diaktifkan!'); });
+
+        // Action Operational Sesi Chat
+        document.getElementById('newChatSessionBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); buatSesiObrolanBaru();
+        });
+        document.getElementById('clearAllDatabaseBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); hapusSeluruhSesiDatabase();
+        });
+        document.getElementById('triggerBgFileBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); document.getElementById('bgFileInput').click();
+        });
+        document.getElementById('applyConfigurationBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); simpanPengaturanKonfigurasi(); alert('Parameter API & Model disimpan!'); closeAllPanels();
+        });
+        document.getElementById('cancelImageUploadBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); batalUnggahFoto();
+        });
+        document.getElementById('sendPayloadBtn').addEventListener('click', function(e) {
+            e.stopPropagation(); handleSendMessage();
+        });
+
+        // Provider Select Handler
+        document.getElementById('activeProvider').addEventListener('change', function() {
+            switchProvider();
+        });
+
+        // Mode Pill Buttons Handler
+        document.querySelectorAll('.mode-pill').forEach(pill => {
+            pill.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.querySelectorAll('.mode-pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                currentAIMode = this.getAttribute('data-mode');
+            });
+        });
     }
 
-    function switchAIMode(mode) {
-        currentAIMode = mode;
-        document.querySelectorAll('.mode-pill').forEach(pill => {
-            pill.classList.remove('active');
+    function switchProvider() {
+        const provider = document.getElementById('activeProvider').value;
+        const modelSelect = document.getElementById('activeModel');
+        document.getElementById('headerEngineTitle').innerText = provider.toUpperCase() + " Workspace";
+        
+        document.getElementById('input-groq-group').style.display = provider === 'groq' ? 'block' : 'none';
+        document.getElementById('input-gemini-group').style.display = provider === 'gemini' ? 'block' : 'none';
+        document.getElementById('input-mistral-group').style.display = provider === 'mistral' ? 'block' : 'none';
+        
+        modelSelect.innerHTML = '';
+        modelsData[provider].forEach(model => {
+            let opt = document.createElement('option'); opt.value = model.id; opt.innerText = model.name; modelSelect.appendChild(opt);
         });
-        const activePill = document.querySelector(`.mode-pill[data-mode="${mode}"]`);
-        if (activePill) activePill.classList.add('active');
     }
 
     function gantiBackgroundGokil(input) {
@@ -417,25 +486,9 @@
         document.getElementById('hiddenFileInput').value = '';
     }
 
-    function switchProvider() {
-        const provider = document.getElementById('activeProvider').value;
-        const modelSelect = document.getElementById('activeModel');
-        document.getElementById('headerEngineTitle').innerText = provider.toUpperCase() + " Workspace";
-        
-        document.getElementById('input-groq-group').style.display = provider === 'groq' ? 'block' : 'none';
-        document.getElementById('input-gemini-group').style.display = provider === 'gemini' ? 'block' : 'none';
-        document.getElementById('input-mistral-group').style.display = provider === 'mistral' ? 'block' : 'none';
-        
-        modelSelect.innerHTML = '';
-        modelsData[provider].forEach(model => {
-            let opt = document.createElement('option'); opt.value = model.id; opt.innerText = model.name; modelSelect.appendChild(opt);
-        });
-    }
-
     function formatMarkdown(text) {
         let formatted = text
-            .replace(/```([\s\S]*?)
-```/g, '<pre><code>$1</code></pre>')
+            .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
             .replace(/`([^`]+)`/g, '<code>$1</code>')
             .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
             .replace(/\*([^*]+)\*/g, '<i>$1</i>')
@@ -457,7 +510,7 @@
             idSesiAktif = 'session_' + Date.now();
             semuaSesiChat[idSesiAktif] = {
                 title: "Obrolan Baru",
-                messages: [{ role: 'assistant', infoText: 'System Engine', text: 'Halo! Sesi obrolan baru siap digunakan. Ketik nama atau perintah apapun, memori sesi ini aktif.' }]
+                messages: [{ role: 'assistant', infoText: 'System Engine', text: 'Halo! Sesi obrolan baru siap digunakan.' }]
             };
             simpanKeLocalStorage();
         }
@@ -524,12 +577,19 @@
             const sesi = semuaSesiChat[id];
             const itemDiv = document.createElement('div');
             itemDiv.className = `history-item ${id === idSesiAktif ? 'active' : ''}`;
-            itemDiv.setAttribute('onclick', `gantiSesiAktif('${id}')`);
+            
+            // Re-binding event click aman via script bukan inline attribute HTML
+            itemDiv.addEventListener('click', function() { gantiSesiAktif(id); });
 
             itemDiv.innerHTML = `
                 <span class="chat-title-text"><i class="fa-regular fa-comment" style="margin-right:8px"></i> ${sesi.title}</span>
-                <i class="fa-solid fa-trash-can delete-session-icon" onclick="hapusSesiTertentu('${id}', event)"></i>
+                <i class="fa-solid fa-trash-can delete-session-icon"></i>
             `;
+            
+            itemDiv.querySelector('.delete-session-icon').addEventListener('click', function(e) {
+                hapusSesiTertentu(id, e);
+            });
+
             container.appendChild(itemDiv);
         });
     }
@@ -541,8 +601,7 @@
         if (semuaSesiChat[idSesiAktif]) {
             semuaSesiChat[idSesiAktif].messages.forEach(msg => {
                 const msgDiv = document.createElement('div');
-                const bubbleSenderClass = msg.role === 'user' ? 'user' : 'ai';
-                msgDiv.className = `message ${bubbleSenderClass}`;
+                msgDiv.className = `message ${msg.role === 'user' ? 'user' : 'ai'}`;
                 msgDiv.innerHTML = `<div class="message-info">${msg.infoText}</div><div>${msg.text}</div>`;
                 chatBox.appendChild(msgDiv);
             });
@@ -552,7 +611,6 @@
 
     function simpanPesanKeSesi(role, infoText, text, rawContent = '') {
         if (!semuaSesiChat[idSesiAktif]) return;
-        
         semuaSesiChat[idSesiAktif].messages.push({ role, infoText, text, rawContent: rawContent || text });
         
         if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && role === 'user') {
@@ -563,18 +621,13 @@
         simpanKeLocalStorage();
     }
 
-    function bangunPayloadMemoriSesi(promptSelesai) {
-        let kontexMemori = [];
-        kontexMemori.push({ role: "system", content: systemPrompts[currentAIMode] });
-
+    function bangunPayloadMemoriSesi() {
+        let kontexMemori = [{ role: "system", content: systemPrompts[currentAIMode] }];
         if (semuaSesiChat[idSesiAktif]) {
             let pesanSesi = semuaSesiChat[idSesiAktif].messages.slice(-12);
             pesanSesi.forEach(m => {
                 if(m.infoText !== 'System Engine') {
-                    kontexMemori.push({
-                        role: m.role,
-                        content: m.rawContent || m.text
-                    });
+                    kontexMemori.push({ role: m.role, content: m.rawContent || m.text });
                 }
             });
         }
@@ -637,11 +690,10 @@
             loadingLine.style.display = 'none';
             const errHtml = `❌ Masukkan API Key di pengaturan sidebar terlebih dahulu!`;
             aiMessageDiv.innerHTML = `<div class="message-info">AUTH_ERROR</div>` + errHtml;
-            simpanPesanKeSesi('assistant', 'AUTH_ERROR', errHtml);
             return;
         }
 
-        const paketPesanBermemori = bangunPayloadMemoriSesi(prompt);
+        const paketPesanBermemori = bangunPayloadMemoriSesi();
 
         try {
             let response, data, aiText = '';
@@ -657,10 +709,7 @@
                 
             } else if (provider === 'gemini') {
                 let geminiContents = paketPesanBermemori.filter(m => m.role !== 'system').map(m => {
-                    return {
-                        role: m.role === 'assistant' ? 'model' : 'user',
-                        parts: [{ text: m.content }]
-                    };
+                    return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
                 });
                 
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -678,11 +727,11 @@
             } else if (provider === 'mistral') {
                 response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ model: model, messages: paketPesanBermemori })
                 });
                 data = await response.json();
-                if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
+                if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
             }
             
             const finalParsedText = formatMarkdown(aiText);
@@ -691,9 +740,7 @@
             
             simpanPesanKeSesi('assistant', headerLabel, finalParsedText, aiText);
         } catch (error) {
-            const errServerHtml = `❌ Terjadi kesalahan: ${error.message}`;
-            aiMessageDiv.innerHTML = `<div class="message-info">CORE_ERROR</div>` + errServerHtml;
-            simpanPesanKeSesi('assistant', 'CORE_ERROR', errServerHtml);
+            aiMessageDiv.innerHTML = `<div class="message-info">CORE_ERROR</div> ❌ Terjadi kesalahan: ${error.message}`;
         } finally {
             loadingLine.style.display = 'none';
         }
@@ -713,10 +760,13 @@
         const savedBg = localStorage.getItem('nexus_custom_bg');
         if (savedBg) pasangBackground(savedBg);
         
+        bindingCoreUserInteractions();
         switchProvider();
         muatPengaturanKonfigurasi();
         inisialisasiDatabaseMultiChat(); 
         
+        document.getElementById('bgFileInput').addEventListener('change', function() { gantiBackgroundGokil(this); });
+        document.getElementById('hiddenFileInput').addEventListener('change', function() { prosesFileFoto(this); });
         document.getElementById('userInputMessage').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSendMessage(); });
     };
 </script>

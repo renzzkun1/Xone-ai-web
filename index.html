@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NexusAI Dynamic Engine Pro</title>
+    <title>NexusAI Dynamic Engine Pro V2</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -13,7 +13,8 @@
             --panel-glass: rgba(15, 18, 36, 0.75);
             --sidebar-glass: #0f111a;
             --sheet-bg: #141724;
-            --accent-purple: #3b82f6;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
             --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -38,7 +39,6 @@
             height: 100dvh; 
             overflow: hidden; 
             position: relative; 
-            transition: background 0.5s ease;
         }
 
         .app-container { 
@@ -64,7 +64,7 @@
             left: -100%; 
             height: 100%; 
             z-index: 99; 
-            transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1); 
+            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
         }
         .sidebar.active { left: 0; }
         
@@ -93,7 +93,6 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
-        /* TOMBOL NEW CHAT PREMIUM */
         .new-chat-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
@@ -109,12 +108,8 @@
             transition: all 0.2s;
             margin-top: 4px;
         }
-        .new-chat-btn:active {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(0.98);
-        }
+        .new-chat-btn:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.97); }
 
-        /* DAFTAR RIWAYAT SESI CHAT */
         .chat-history-list {
             display: flex;
             flex-direction: column;
@@ -141,19 +136,8 @@
             font-weight: 500;
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
-        .history-item .chat-title-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-            margin-right: 8px;
-        }
-        .history-item i.delete-session-icon {
-            font-size: 12px;
-            color: #ef4444;
-            opacity: 0.6;
-            padding: 4px;
-        }
+        .history-item .chat-title-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 8px; }
+        .history-item i.delete-session-icon { font-size: 12px; color: #ef4444; opacity: 0.6; padding: 4px; z-index: 10; }
         .history-item i.delete-session-icon:hover { opacity: 1; }
 
         .clear-chat-btn {
@@ -177,45 +161,15 @@
             border-radius: 16px; 
             padding: 14px; 
         }
-        .config-card h3 { 
-            font-size: 12px; 
-            font-weight: 600; 
-            margin-bottom: 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            color: #cbd5e1;
-        }
-        label { 
-            display: block; 
-            font-size: 11px; 
-            color: var(--text-muted); 
-            margin-bottom: 5px; 
-        }
+        .config-card h3 { font-size: 12px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #cbd5e1; }
+        label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
         
         input[type="text"], input[type="password"], select { 
-            width: 100%; 
-            padding: 10px 12px; 
-            background: rgba(0, 0, 0, 0.3); 
-            border: 1px solid var(--glass-border); 
-            border-radius: 10px; 
-            color: white; 
-            font-size: 13px; 
-            margin-bottom: 10px; 
-            outline: none; 
+            width: 100%; padding: 10px 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border); border-radius: 10px; color: white; font-size: 13px; margin-bottom: 10px; outline: none; 
         }
         
         .bg-picker-btn, .save-btn { 
-            width: 100%; 
-            padding: 11px; 
-            background: rgba(59, 130, 246, 0.1); 
-            border: 1px solid rgba(59, 130, 246, 0.2); 
-            border-radius: 10px; 
-            color: #60a5fa; 
-            font-weight: 600; 
-            font-size: 12.5px; 
-            cursor: pointer; 
-            margin-bottom: 8px;
+            width: 100%; padding: 11px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 10px; color: #60a5fa; font-weight: 600; font-size: 12.5px; cursor: pointer; margin-bottom: 8px;
         }
         .save-btn { background: var(--accent-gradient); color: white; border: none; margin-bottom: 0; margin-top: 5px; }
 
@@ -225,28 +179,47 @@
             height: 60px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 14px; 
             background: var(--panel-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); gap: 12px; z-index: 5; 
         }
-        .menu-toggle-btn { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; font-size: 16px; cursor: pointer; }
+        .menu-toggle-btn { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .header-title-info h1 { font-size: 15px; font-weight: 600; }
         
         /* CHAT MESSAGES */
         .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-        .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
-        .message.user { background: rgba(255, 255, 255, 0.08); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; position: relative; }
+        .message.user { background: rgba(255, 255, 255, 0.08); color: white; align-self: flex-end; border-bottom-right-radius: 4px; border: 1px solid rgba(255,255,255,0.03); }
         .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; }
-        .message-info { font-size: 11px; color: #60a5fa; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
+        .message-info { font-size: 11px; color: #60a5fa; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
         /* Parser AI Formatting */
-        .message pre { background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 10px; margin: 6px 0; overflow-x: auto; border: 1px solid var(--glass-border); font-family: monospace; font-size: 12.5px; }
-        .message code { font-family: monospace; background: rgba(255,255,255,0.15); padding: 2px 5px; border-radius: 4px; font-size: 12.5px; }
-        .message ul, .message ol { margin-left: 18px; margin-top: 4px; }
+        .message pre { background: #090a10; padding: 12px; border-radius: 12px; margin: 8px 0; overflow-x: auto; border: 1px solid var(--glass-border); font-family: 'Courier New', monospace; font-size: 13px; color: #34d399; position: relative;}
+        .message code { font-family: monospace; background: rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #f43f5e; }
+        .message ul, .message ol { margin-left: 20px; margin-top: 6px; }
+
+        /* NEW KEREEN: AI MODE CONTROLLER */
+        .mode-container {
+            display: flex; gap: 8px; padding: 6px 14px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--glass-border); overflow-x: auto; scrollbar-width: none;
+        }
+        .mode-container::-webkit-scrollbar { display: none; }
+        .mode-pill {
+            padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
+        }
+        .mode-pill.active[data-mode="normal"] { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: #3b82f6; }
+        .mode-pill.active[data-mode="roblox"] { background: rgba(249, 115, 22, 0.15); color: #fb923c; border-color: #f97316; }
+        .mode-pill.active[data-mode="coding"] { background: rgba(168, 85, 247, 0.15); color: #c084fc; border-color: #a855f7; }
+
+        /* NEW KEREN: GLOWING WAVE LOADING ANIMATION */
+        .glow-loading {
+            display: none; height: 3px; width: 100%; background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6); background-size: 200% 100%; animation: glowMove 1.5s linear infinite; margin-bottom: 2px;
+        }
+        @keyframes glowMove { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
         /* ACTIONS INPUT BAR */
-        .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.5); backdrop-filter: blur(10px); z-index: 5; }
-        .input-wrapper { display: flex; background: rgba(255, 250, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px 6px 6px 14px; align-items: center; gap: 10px; }
-        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 36px; }
+        .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 5; }
+        .input-wrapper { display: flex; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; }
+        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 38px; padding-left: 10px; }
         
-        .plus-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
+        .plus-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: transform 0.1s; }
         .send-btn-paper { background: var(--text-main); color: var(--bg-dark); }
+        .plus-btn:active, .send-btn-paper:active { transform: scale(0.9); }
 
         /* PREMIUM BOTTOM SHEET MODAL */
         .bottom-sheet {
@@ -268,13 +241,6 @@
         .tools-left i { width: 20px; text-align: center; font-size: 15px; color: var(--text-muted); }
         .badge-new { background: #3b82f6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
 
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.15); transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: #3b82f6; }
-        input:checked + .slider:before { transform: translateX(20px); }
-
         .preview-box { display: none; margin-bottom: 10px; position: relative; max-width: 90px; }
         .preview-box.active { display: block; }
         .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
@@ -288,7 +254,7 @@
 
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
-            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space</span>
+            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space v2</span>
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
@@ -333,7 +299,17 @@
             </div>
         </div>
 
+        <!-- NEW AI ENGINE MODE CONTROLLER -->
+        <div class="mode-container">
+            <div class="mode-pill active" data-mode="normal" onclick="switchAIMode('normal')"><i class="fa-solid fa-message"></i> AI Normal Chat</div>
+            <div class="mode-pill" data-mode="roblox" onclick="switchAIMode('roblox')"><i class="fa-solid fa-gamepad"></i> Roblox Studio Expert</div>
+            <div class="mode-pill" data-mode="coding" onclick="switchAIMode('coding')"><i class="fa-solid fa-code"></i> Coding Program</div>
+        </div>
+
         <div class="chat-messages" id="chatBox"></div>
+
+        <!-- GLOWING LOADING LINE INTERACTIVE -->
+        <div class="glow-loading" id="glowLoadingLine"></div>
 
         <div class="chat-input-container">
             <div class="preview-box" id="imagePreviewBox">
@@ -358,7 +334,7 @@
                 <div class="media-item" onclick="alert('Menghubungkan Google Drive')"><div class="media-icon-wrapper"><i class="fa-solid fa-cloud" style="color:#eab308"></i></div><span style="font-size:12px;">Drive</span></div>
             </div>
             <hr style="border:none; border-top:1px solid var(--glass-border)">
-            <div class="sheet-section-title">Alat</div>
+            <div class="sheet-section-title">Alat Extra</div>
             <div class="tools-list">
                 <div class="tools-item" onclick="alert('Fitur Buat Gambar Siap Diintegrasi!')"><div class="tools-left"><i class="fa-solid fa-wand-magic-sparkles"></i> Buat gambar</div></div>
                 <div class="tools-item" onclick="alert('Fitur Buat Musik Siap Diintegrasi!')"><div class="tools-left"><i class="fa-solid fa-music"></i> Buat musik</div><span class="badge-new">Baru</span></div>
@@ -376,10 +352,16 @@
     };
 
     let temporaryImgUrl = '';
-    
-    // STRUKTUR MULTI CHAT DATABASE
     let semuaSesiChat = {}; 
     let idSesiAktif = '';
+    let currentAIMode = 'normal'; // default mode
+
+    // SYSTEM INSTRUCTIONS UNTUK TIAP MODE
+    const systemPrompts = {
+        normal: "Kamu adalah NexusAI, asisten AI pintar, interaktif, ramah, dan sangat membantu.",
+        roblox: "Kamu adalah Expert Game Developer Roblox Studio. Berikan kode script Luau yang bersih, efisien, jelaskan sistem grinding, crafting, dataStore, atau kustomisasi part secara mendalam sesuai standar industri Roblox.",
+        coding: "Kamu adalah Software Engineer Senior. Berikan arsitektur kode pemrograman terbaik, bersih (Clean Code), tangani error handling dengan baik, dan jelaskan logika baris per baris secara teknis."
+    };
 
     function toggleSidebar() { 
         document.getElementById('sidebar').classList.toggle('active'); 
@@ -396,9 +378,16 @@
     }
     function bukaGaleri() { document.getElementById('hiddenFileInput').click(); closeAllPanels(); }
 
+    function switchAIMode(mode) {
+        currentAIMode = mode;
+        document.querySelectorAll('.mode-pill').forEach(pill => {
+            pill.classList.remove('active');
+        });
+        document.querySelector(`.mode-pill[data-mode="${mode}"]`).classList.add('active');
+    }
+
     function gantiBackgroundGokil(input) {
-        const file = input.files[0];
-        if (!file) return;
+        const file = input.files[0]; if (!file) return;
         const reader = new FileReader();
         reader.onload = function(e) {
             pasangBackground(e.target.result);
@@ -439,7 +428,10 @@
     }
 
     function formatMarkdown(text) {
+        // Gabungan parser markdown sederhana untuk kode blok pre, inline code, bold, italic, list
         let formatted = text
+            .replace(/```([\s\S]*?)
+```/g, '<pre><code>$1</code></pre>')
             .replace(/`([^`]+)`/g, '<code>$1</code>')
             .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
             .replace(/\*([^*]+)\*/g, '<i>$1</i>')
@@ -448,7 +440,7 @@
         return formatted.replace(/\n/g, '<br>');
     }
 
-    // ================= DYNAMIC MULTI-CHAT CORE ENGINE =================
+    // ================= MULTI-CHAT CORE ENGINE + SHORT MEMORY INTEGRATION =================
     
     function inisialisasiDatabaseMultiChat() {
         const localChats = localStorage.getItem('nexus_multi_chats');
@@ -463,7 +455,7 @@
             idSesiAktif = 'session_' + Date.now();
             semuaSesiChat[idSesiAktif] = {
                 title: "Obrolan Baru",
-                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan baru siap digunakan. Riwayat obrolan ini akan tersimpan terpisah di sidebar kiri.' }]
+                messages: [{ role: 'assistant', infoText: 'System Engine', text: 'Halo! Sesi obrolan baru siap digunakan. Ketik nama atau perintah apapun, memori sesi ini aktif.' }]
             };
             simpanKeLocalStorage();
         }
@@ -476,7 +468,7 @@
         idSesiAktif = 'session_' + Date.now();
         semuaSesiChat[idSesiAktif] = {
             title: "Obrolan Baru",
-            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru. Silakan ketik perintah apa saja.' }]
+            messages: [{ role: 'assistant', infoText: 'System Engine', text: 'Membuka lembar obrolan baru. Silakan ajukan pertanyaan.' }]
         };
         simpanKeLocalStorage();
         segarkanTampilanSidebar();
@@ -509,7 +501,7 @@
     }
 
     function hapusSeluruhSesiDatabase() {
-        if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan tanpa sisa?")) {
+        if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan?")) {
             semuaSesiChat = {};
             localStorage.removeItem('nexus_multi_chats');
             localStorage.removeItem('nexus_active_session_id');
@@ -547,7 +539,8 @@
         if (semuaSesiChat[idSesiAktif]) {
             semuaSesiChat[idSesiAktif].messages.forEach(msg => {
                 const msgDiv = document.createElement('div');
-                msgDiv.className = `message ${msg.sender}`;
+                const bubbleSenderClass = msg.role === 'user' ? 'user' : 'ai';
+                msgDiv.className = `message ${bubbleSenderClass}`;
                 msgDiv.innerHTML = `<div class="message-info">${msg.infoText}</div><div>${msg.text}</div>`;
                 chatBox.appendChild(msgDiv);
             });
@@ -555,18 +548,41 @@
         setTimeout(() => { chatBox.scrollTo({ top: chatBox.scrollHeight }); }, 50);
     }
 
-    function simpanPesanKeSesi(sender, infoText, text) {
+    function simpanPesanKeSesi(role, infoText, text, rawContent = '') {
         if (!semuaSesiChat[idSesiAktif]) return;
         
-        semuaSesiChat[idSesiAktif].messages.push({ sender, infoText, text });
+        // Simpan text mentah untuk diumpankan ke API memori agar HTML-nya tidak ikut terkirim
+        semuaSesiChat[idSesiAktif].messages.push({ role, infoText, text, rawContent: rawContent || text });
         
-        if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && sender === 'user') {
+        if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && role === 'user') {
             let cleanText = text.replace(/<[^>]*>/g, '');
             semuaSesiChat[idSesiAktif].title = cleanText.substring(0, 22) + (cleanText.length > 22 ? '...' : '');
             segarkanTampilanSidebar();
         }
-        
         simpanKeLocalStorage();
+    }
+
+    // MEMBANGUN STRUKTUR MEMORI UNTUK KONTEKS API (MEMBUAT AI INGAT CHAT SEBELUMNYA)
+    function bangunPayloadMemoriSesi(promptSelesai) {
+        let kontexMemori = [];
+        
+        // Tambahkan Aturan Main / System Prompt berdasarkan Mode yang Dipilih
+        kontexMemori.push({ role: "system", content: systemPrompts[currentAIMode] });
+
+        if (semuaSesiChat[idSesiAktif]) {
+            // Batasi ambil 12 baris pesan terakhir agar hemat token tapi memori tetap tajam
+            let pesanSesi = semuaSesiChat[idSesiAktif].messages.slice(-12);
+            pesanSesi.forEach(m => {
+                // Jangan masukkan pesan sistem pembuka bawaan lokal
+                if(m.infoText !== 'System Engine') {
+                    kontexMemori.push({
+                        role: m.role,
+                        content: m.rawContent || m.text
+                    });
+                }
+            });
+        }
+        return kontexMemori;
     }
 
     // ====================================================================
@@ -602,19 +618,23 @@
 
         const provider = document.getElementById('activeProvider').value;
         const model = document.getElementById('activeModel').value;
+        const loadingLine = document.getElementById('glowLoadingLine');
 
         let userBubbleContent = prompt;
         if(temporaryImgUrl) {
             userBubbleContent = `<img src="${temporaryImgUrl}" style="max-width:100%; max-height:180px; border-radius:10px; margin-bottom:6px; display:block;">${prompt}`;
         }
 
+        // Tampilkan ke layar UI & Simpan ke database Lokal
         appendMessage('user', 'Kamu', userBubbleContent);
-        simpanPesanKeSesi('user', 'Kamu', userBubbleContent);
+        simpanPesanKeSesi('user', 'Kamu', userBubbleContent, prompt);
         
         textInput.value = '';
         batalUnggahFoto();
 
-        const aiMessageDiv = appendMessage('ai', provider.toUpperCase() + " ENGINE", 'Sedang berpikir...');
+        // Aktifkan Efek Glowing Wave Loading
+        loadingLine.style.display = 'block';
+        const aiMessageDiv = appendMessage('ai', provider.toUpperCase() + " ENGINE", 'Sedang menganalisis konteks...');
         
         let apiKey = '';
         if(provider === 'groq') apiKey = document.getElementById('sidebarGroqKey').value.trim();
@@ -622,51 +642,78 @@
         if(provider === 'mistral') apiKey = document.getElementById('sidebarMistralKey').value.trim();
 
         if(!apiKey) {
+            loadingLine.style.display = 'none';
             const errHtml = `❌ Masukkan API Key di pengaturan sidebar terlebih dahulu!`;
             aiMessageDiv.innerHTML = `<div class="message-info">AUTH_ERROR</div>` + errHtml;
-            simpanPesanKeSesi('ai', 'AUTH_ERROR', errHtml);
+            simpanPesanKeSesi('assistant', 'AUTH_ERROR', errHtml);
             return;
         }
 
+        // Susun payload pesan terstruktur yang membawa memori percakapan lama
+        const paketPesanBermemori = bangunPayloadMemoriSesi(prompt);
+
         try {
             let response, data, aiText = '';
+            
             if (provider === 'groq') {
                 response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                    body: JSON.stringify({ model: model, messages: paketPesanBermemori })
                 });
                 data = await response.json();
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
+                
             } else if (provider === 'gemini') {
+                // Konversi format OpenAI ke format Chat Google Gemini agar memori bekerja sempurna
+                let geminiContents = paketPesanBermemori.filter(m => m.role !== 'system').map(m => {
+                    return {
+                        role: m.role === 'assistant' ? 'model' : 'user',
+                        parts: [{ text: m.content }]
+                    };
+                });
+                
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-                response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
+                response = await fetch(url, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        contents: geminiContents,
+                        systemInstruction: { parts: [{ text: systemPrompts[currentAIMode] }] }
+                    }) 
+                });
                 data = await response.json();
                 if(response.ok) aiText = data.candidates[0].content.parts[0].text; else throw new Error(data.error?.message);
+                
             } else if (provider === 'mistral') {
                 response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
+                    body: JSON.stringify({ model: model, messages: paketPesanBermemori })
                 });
                 data = await response.json();
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
             }
             
             const finalParsedText = formatMarkdown(aiText);
-            aiMessageDiv.innerHTML = `<div class="message-info">${provider.toUpperCase()} (${model})</div>` + finalParsedText;
-            simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
+            const headerLabel = `${provider.toUpperCase()} (${currentAIMode.toUpperCase()})`;
+            aiMessageDiv.innerHTML = `<div class="message-info">${headerLabel}</div>` + finalParsedText;
+            
+            // Simpan respon AI ke memori database lokal
+            simpanPesanKeSesi('assistant', headerLabel, finalParsedText, aiText);
         } catch (error) {
             const errServerHtml = `❌ Terjadi kesalahan: ${error.message}`;
             aiMessageDiv.innerHTML = `<div class="message-info">CORE_ERROR</div>` + errServerHtml;
-            simpanPesanKeSesi('ai', 'CORE_ERROR', errServerHtml);
+            simpanPesanKeSesi('assistant', 'CORE_ERROR', errServerHtml);
+        } finally {
+            loadingLine.style.display = 'none'; // Matikan loading wave
         }
     }
 
     function appendMessage(sender, infoText, text) {
         const chatBox = document.getElementById('chatBox');
         const msgDiv = document.createElement('div');
-        msgDiv.className = `message ${sender}`;
+        msgDiv.className = `message ${sender === 'user' ? 'user' : 'ai'}`;
         msgDiv.innerHTML = `<div class="message-info">${infoText}</div><div>${text}</div>`;
         chatBox.appendChild(msgDiv);
         setTimeout(() => { chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: 'smooth' }); }, 50);
@@ -686,4 +733,4 @@
 </script>
 </body>
 </html>
-
+	

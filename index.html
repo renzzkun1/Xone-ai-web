@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Xone AI Dynamic Engine Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Library untuk Code Highlighter -->
@@ -42,7 +42,6 @@
             height: 100dvh; 
             overflow: hidden; 
             position: relative; 
-            transition: background 0.5s ease;
         }
 
         .app-container { 
@@ -67,11 +66,12 @@
             top: 0; 
             left: -100%; 
             height: 100%; 
-            z-index: 99; 
-            transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1); 
+            z-index: 200; /* Dinaikkan agar di atas overlay */
+            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
         }
         .sidebar.active { left: 0; }
         
+        /* OVERLAY FIXER */
         .sidebar-overlay { 
             display: none; 
             position: absolute; 
@@ -79,7 +79,7 @@
             background: rgba(0, 0, 0, 0.6); 
             backdrop-filter: blur(4px); 
             -webkit-backdrop-filter: blur(4px); 
-            z-index: 98; 
+            z-index: 150; /* Di bawah posisi sidebar dan sheet aktif */
         }
         .sidebar-overlay.active { display: block; }
         
@@ -109,10 +109,7 @@
             transition: all 0.2s;
             margin-top: 4px;
         }
-        .new-chat-btn:active {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(0.98);
-        }
+        .new-chat-btn:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.98); }
 
         .chat-history-list {
             display: flex;
@@ -132,7 +129,6 @@
             justify-content: space-between;
             background: transparent;
             color: var(--text-muted);
-            transition: background 0.2s;
         }
         .history-item.active {
             background: rgba(59, 130, 246, 0.15);
@@ -140,19 +136,8 @@
             font-weight: 500;
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
-        .history-item .chat-title-text {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            flex: 1;
-            margin-right: 8px;
-        }
-        .history-item i.delete-session-icon {
-            font-size: 12px;
-            color: #ef4444;
-            opacity: 0.6;
-            padding: 4px;
-        }
+        .history-item .chat-title-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 8px; }
+        .history-item i.delete-session-icon { font-size: 12px; color: #ef4444; opacity: 0.6; padding: 4px; }
 
         .clear-chat-btn {
             background: rgba(239, 68, 68, 0.08);
@@ -175,21 +160,8 @@
             border-radius: 16px; 
             padding: 14px; 
         }
-        .config-card h3 { 
-            font-size: 12px; 
-            font-weight: 600; 
-            margin-bottom: 12px; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            color: #cbd5e1;
-        }
-        label { 
-            display: block; 
-            font-size: 11px; 
-            color: var(--text-muted); 
-            margin-bottom: 5px; 
-        }
+        .config-card h3 { font-size: 12px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #cbd5e1; }
+        label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
         
         input[type="text"], input[type="password"], select { 
             width: 100%; 
@@ -218,28 +190,23 @@
         .save-btn { background: var(--accent-gradient); color: white; border: none; margin-bottom: 0; margin-top: 5px; }
 
         /* MAIN INTERFACE */
-        .chat-area { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; z-index: 10; }
         .chat-header { 
             height: 60px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 14px; 
-            background: var(--panel-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); gap: 12px; z-index: 5; 
+            background: var(--panel-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); gap: 12px; z-index: 20; 
         }
         .menu-toggle-btn { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; font-size: 16px; cursor: pointer; }
         .header-title-info h1 { font-size: 15px; font-weight: 600; }
         
         /* CHAT MESSAGES */
-        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; z-index: 11; }
         .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; position: relative; }
         .message.user { background: rgba(255, 255, 255, 0.08); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; width: 100%; }
         .message-info { font-size: 11px; color: #60a5fa; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
 
-        /* Custom Code Box Layout & Copy Button */
-        .code-container {
-            position: relative;
-            margin: 10px 0;
-            width: 100%;
-            display: block;
-        }
+        /* Code Box Layout & Copy Button */
+        .code-container { position: relative; margin: 10px 0; width: 100%; display: block; }
         .message pre { 
             margin: 0 !important;
             background: #0d1117 !important; 
@@ -252,48 +219,42 @@
         }
         .message code { font-family: monospace; font-size: 12.5px; }
         .message :not(pre) > code { background: rgba(255,255,255,0.15); padding: 2px 5px; border-radius: 4px; }
-        .message ul, .message ol { margin-left: 18px; margin-top: 4px; }
 
         .copy-btn {
             position: absolute;
             top: 8px;
             right: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #e2e8f0;
-            padding: 5px 10px;
-            border-radius: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            z-index: 10;
+            z-index: 99; /* Pastikan berada paling atas di dalam box code */
         }
 
         /* ACTIONS INPUT BAR */
-        .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.5); backdrop-filter: blur(10px); z-index: 5; }
-        .input-wrapper { display: flex; background: rgba(255, 250, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; }
-        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 36px; padding-left: 10px; }
+        .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 30; }
+        .input-wrapper { display: flex; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; }
+        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 38px; padding-left: 10px; }
         
-        .plus-btn, .mic-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; shrink: 0; }
+        .plus-btn, .mic-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; shrink: 0; }
         .send-btn-paper { background: var(--text-main); color: var(--bg-dark); }
         
-        /* Mic Recording Pulse Animation */
         .mic-btn.recording {
             color: #ef4444 !important;
             background: rgba(239, 68, 68, 0.15) !important;
-            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
             animation: pulseMic 1.2s infinite alternate;
         }
-        @keyframes pulseMic {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.08); }
-        }
+        @keyframes pulseMic { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
         /* PREMIUM BOTTOM SHEET MODAL */
         .bottom-sheet {
             position: absolute; bottom: -100%; left: 0; right: 0; background: var(--sheet-bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
-            padding: 8px 16px 30px 16px; z-index: 100; display: flex; flex-direction: column; gap: 16px; max-height: 75vh; overflow-y: auto;
-            transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+            padding: 8px 16px 30px 16px; z-index: 210; display: flex; flex-direction: column; gap: 16px; max-height: 75vh; overflow-y: auto;
+            transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
         }
         .bottom-sheet.active { bottom: 0; }
         .sheet-handle { width: 36px; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 2px; margin: 0 auto 4px auto; }
@@ -318,20 +279,18 @@
 <body>
 
 <div class="app-container">
+    <!-- Overlay sengaja dikasih fungsi penutup panel agar kalau diketuk di luar sidebar, panel langsung menutup -->
     <div class="sidebar-overlay" id="overlay" onclick="closeAllPanels()"></div>
 
+    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
             <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Xone Space</span>
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-
         <button class="new-chat-btn" onclick="buatSesiObrolanBaru()"><i class="fa-solid fa-plus"></i> Obrolan Baru</button>
-
         <div style="font-size:12px; font-weight:600; padding:4px; color:var(--text-muted); margin-top: 8px;">Percakapan Terbaru</div>
-        
         <div class="chat-history-list" id="historyContainer"></div>
-
         <button class="clear-chat-btn" onclick="hapusSeluruhSesiDatabase()"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua Sesi</button>
         
         <div class="config-card" style="margin-top:auto">
@@ -359,6 +318,7 @@
         </div>
     </div>
 
+    <!-- MAIN CHAT FIELD -->
     <div class="chat-area">
         <div class="chat-header">
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
@@ -369,6 +329,7 @@
 
         <div class="chat-messages" id="chatBox"></div>
 
+        <!-- INPUT FOOTER CONTAINER (Z-INDEX DI-LOCK AMAN) -->
         <div class="chat-input-container">
             <div class="preview-box" id="imagePreviewBox">
                 <span class="close-preview" onclick="batalUnggahFoto()"><i class="fa-solid fa-xmark"></i></span>
@@ -384,6 +345,7 @@
             </div>
         </div>
 
+        <!-- BOTTOM SHEET -->
         <div class="bottom-sheet" id="bottomSheet">
             <div class="sheet-handle"></div>
             <div class="media-grid">
@@ -416,22 +378,32 @@
     let pengenalSuara = null;
     let sedangMerekam = false;
 
-    const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini! Jika pengguna menanyakan siapa pembuatmu, jawablah dengan bangga bahwa kamu dikembangkan oleh RenzzAiHost.";
+    const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini!";
 
     function toggleSidebar() { 
-        document.getElementById('sidebar').classList.toggle('active'); 
-        document.getElementById('overlay').classList.toggle('active'); 
+        const sb = document.getElementById('sidebar');
+        const ov = document.getElementById('overlay');
+        sb.classList.toggle('active');
+        if(sb.classList.contains('active')) { ov.classList.add('active'); } else { ov.classList.remove('active'); }
     }
+    
     function toggleBottomSheet() {
-        document.getElementById('bottomSheet').classList.toggle('active');
-        document.getElementById('overlay').classList.toggle('active');
+        const bs = document.getElementById('bottomSheet');
+        const ov = document.getElementById('overlay');
+        bs.classList.toggle('active');
+        if(bs.classList.contains('active')) { ov.classList.add('active'); } else { ov.classList.remove('active'); }
     }
+    
     function closeAllPanels() {
         document.getElementById('sidebar').classList.remove('active');
         document.getElementById('bottomSheet').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
     }
-    function bukaGaleri() { document.getElementById('hiddenFileInput').click(); document.getElementById('bottomSheet').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
+    
+    function bukaGaleri() { 
+        document.getElementById('hiddenFileInput').click(); 
+        closeAllPanels();
+    }
 
     function gantiBackgroundGokil(input) {
         const file = input.files[0];
@@ -444,6 +416,7 @@
         };
         reader.readAsDataURL(file);
     }
+    
     function pasangBackground(imgData) {
         document.body.style.background = `linear-gradient(rgba(11, 12, 20, 0.85), rgba(11, 12, 20, 0.95)), url('${imgData}') no-repeat center center`;
         document.body.style.backgroundSize = "cover"; document.body.style.backgroundAttachment = "fixed";
@@ -455,6 +428,7 @@
         document.getElementById('imagePreviewSrc').src = temporaryImgUrl;
         document.getElementById('imagePreviewBox').classList.add('active');
     }
+    
     function batalUnggahFoto() {
         temporaryImgUrl = ''; document.getElementById('imagePreviewBox').classList.remove('active');
         document.getElementById('hiddenFileInput').value = '';
@@ -498,7 +472,6 @@
     }
 
     function copyKodeKeClipboard(button) {
-        // Ambil elemen code dari container yang sama dengan tombol
         const preElement = button.nextElementSibling;
         const codeElement = preElement.querySelector('code');
         const textToCopy = codeElement.innerText || codeElement.textContent;
@@ -540,7 +513,7 @@
                 pengenalSuara.start();
                 sedangMerekam = true;
                 document.getElementById('micBtn').classList.add('recording');
-                document.getElementById('userInputMessage').placeholder = "Mendengarkan suara kamu...";
+                document.getElementById('userInputMessage').placeholder = "Mendengarkan suara...";
             } catch (err) { console.error(err); }
         }
     }
@@ -564,7 +537,7 @@
             idSesiAktif = 'session_' + Date.now();
             semuaSesiChat[idSesiAktif] = {
                 title: "Obrolan Baru",
-                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan Xone AI siap digunakan. Riwayat obrolan aman tersimpan di sidebar.' }]
+                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan Xone AI siap digunakan.' }]
             };
             simpanKeLocalStorage();
         }
@@ -577,7 +550,7 @@
         idSesiAktif = 'session_' + Date.now();
         semuaSesiChat[idSesiAktif] = {
             title: "Obrolan Baru",
-            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru. Xone AI siap menerima perintah.' }]
+            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru.' }]
         };
         simpanKeLocalStorage();
         segarkanTampilanSidebar();
@@ -659,7 +632,6 @@
 
     function simpanPesanKeSesi(sender, infoText, text) {
         if (!semuaSesiChat[idSesiAktif]) return;
-        
         semuaSesiChat[idSesiAktif].messages.push({ sender, infoText, text });
         
         if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && sender === 'user') {
@@ -667,7 +639,6 @@
             semuaSesiChat[idSesiAktif].title = cleanText.substring(0, 22) + (cleanText.length > 22 ? '...' : '');
             segarkanTampilanSidebar();
         }
-        
         simpanKeLocalStorage();
     }
 
@@ -697,37 +668,27 @@
 
     function bangunPayloadRiwayat(promptTerbaru, provider) {
         let contextualMessages = [];
-        
         if (provider === 'gemini') {
             contextualMessages.push({ role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] });
-            contextualMessages.push({ role: "model", parts: [{ text: "Baik, saya mengerti. Saya adalah Xone AI yang diciptakan oleh RenzzAiHost." }] });
+            contextualMessages.push({ role: "model", parts: [{ text: "Siap dimengerti." }] });
             
             if (semuaSesiChat[idSesiAktif]) {
                 semuaSesiChat[idSesiAktif].messages.forEach(msg => {
                     if (msg.infoText === "System Engine" || msg.infoText === "AUTH_ERROR" || msg.infoText === "CORE_ERROR") return;
                     let cleanText = msg.text.replace(/<[^>]*>/g, ''); 
-                    
-                    if (msg.sender === 'user') {
-                        contextualMessages.push({ role: "user", parts: [{ text: cleanText }] });
-                    } else if (msg.sender === 'ai') {
-                        contextualMessages.push({ role: "model", parts: [{ text: cleanText }] });
-                    }
+                    if (msg.sender === 'user') contextualMessages.push({ role: "user", parts: [{ text: cleanText }] });
+                    else if (msg.sender === 'ai') contextualMessages.push({ role: "model", parts: [{ text: cleanText }] });
                 });
             }
             contextualMessages.push({ role: "user", parts: [{ text: promptTerbaru }] });
         } else {
             contextualMessages.push({ role: "system", content: SYSTEM_INSTRUCTION });
-            
             if (semuaSesiChat[idSesiAktif]) {
                 semuaSesiChat[idSesiAktif].messages.forEach(msg => {
                     if (msg.infoText === "System Engine" || msg.infoText === "AUTH_ERROR" || msg.infoText === "CORE_ERROR") return;
                     let cleanText = msg.text.replace(/<[^>]*>/g, '');
-                    
-                    if (msg.sender === 'user') {
-                        contextualMessages.push({ role: "user", content: cleanText });
-                    } else if (msg.sender === 'ai') {
-                        contextualMessages.push({ role: "assistant", content: cleanText });
-                    }
+                    if (msg.sender === 'user') contextualMessages.push({ role: "user", content: cleanText });
+                    else if (msg.sender === 'ai') contextualMessages.push({ role: "assistant", content: cleanText });
                 });
             }
             contextualMessages.push({ role: "user", content: promptTerbaru });
@@ -794,11 +755,11 @@
             } else if (provider === 'mistral') {
                 response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ model: model, messages: payloadChat })
                 });
                 data = await response.json();
-                if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
+                if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
             }
             
             const finalParsedText = formatMarkdown(aiText);
@@ -817,9 +778,7 @@
                     chatBox.scrollTo({ top: chatBox.scrollHeight });
                 } else {
                     clearInterval(interval);
-                    aiMessageDiv.querySelectorAll('pre code').forEach((el) => {
-                        hljs.highlightElement(el);
-                    });
+                    aiMessageDiv.querySelectorAll('pre code').forEach((el) => { hljs.highlightElement(el); });
                     simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
                 }
             }, 30);

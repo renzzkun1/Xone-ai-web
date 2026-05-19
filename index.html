@@ -7,6 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Library untuk Code Highlighter -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    
     <style>
         :root {
             --bg-dark: #0b0c14;
@@ -92,7 +96,6 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
-        /* TOMBOL NEW CHAT PREMIUM */
         .new-chat-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
@@ -113,7 +116,6 @@
             transform: scale(0.98);
         }
 
-        /* DAFTAR RIWAYAT SESI CHAT */
         .chat-history-list {
             display: flex;
             flex-direction: column;
@@ -234,18 +236,61 @@
         .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; }
         .message-info { font-size: 11px; color: #60a5fa; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
 
-        /* Parser AI Formatting */
-        .message pre { background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 10px; margin: 6px 0; overflow-x: auto; border: 1px solid var(--glass-border); font-family: monospace; font-size: 12.5px; }
-        .message code { font-family: monospace; background: rgba(255,255,255,0.15); padding: 2px 5px; border-radius: 4px; font-size: 12.5px; }
+        /* Custom Code Box Layout & Copy Button */
+        .code-container {
+            position: relative;
+            margin: 10px 0;
+            width: 100%;
+        }
+        .message pre { 
+            margin: 0 !important;
+            background: #0d1117 !important; 
+            padding: 34px 14px 14px 14px !important; 
+            border-radius: 12px !important; 
+            overflow-x: auto; 
+            border: 1px solid var(--glass-border) !important; 
+            font-family: monospace; 
+            font-size: 12.5px; 
+        }
+        .message code { font-family: monospace; font-size: 12.5px; }
+        .message :not(pre) > code { background: rgba(255,255,255,0.15); padding: 2px 5px; border-radius: 4px; }
         .message ul, .message ol { margin-left: 18px; margin-top: 4px; }
+
+        .copy-btn {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+        .copy-btn:active { background: rgba(255, 255, 255, 0.2); color: white; }
 
         /* ACTIONS INPUT BAR */
         .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.5); backdrop-filter: blur(10px); z-index: 5; }
         .input-wrapper { display: flex; background: rgba(255, 250, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px 6px 6px 14px; align-items: center; gap: 10px; }
         .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 36px; }
         
-        .plus-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
+        .plus-btn, .mic-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; }
         .send-btn-paper { background: var(--text-main); color: var(--bg-dark); }
+        
+        /* Mic Recording Pulse Animation */
+        .mic-btn.recording {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+            animation: pulseMic 1.2s infinite alternate;
+        }
+        @keyframes pulseMic {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.08); }
+        }
 
         /* PREMIUM BOTTOM SHEET MODAL */
         .bottom-sheet {
@@ -344,6 +389,7 @@
             <div class="input-wrapper">
                 <button class="plus-btn" onclick="toggleBottomSheet()"><i class="fa-solid fa-plus"></i></button>
                 <input type="text" id="userInputMessage" placeholder="Ketik pesan di sini...">
+                <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()"><i class="fa-solid fa-microphone"></i></button>
                 <button class="send-btn-paper" onclick="handleSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
@@ -377,8 +423,10 @@
     let temporaryImgUrl = '';
     let semuaSesiChat = {}; 
     let idSesiAktif = '';
+    let pengenalSuara = null;
+    let sedangMerekam = false;
 
-    // SYSTEM IDENTITY & CONTEXT PROMPT MENGINGAT NAMA
+    // SYSTEM IDENTITY & CONTEXT PROMPT
     const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini! Jika pengguna menanyakan siapa pembuatmu atau siapa yang membuatmu, jawablah dengan bangga bahwa kamu dikembangkan oleh RenzzAiHost tanpa melupakan atau mengesampingkan topik pembicaraan/konteks yang saat ini sedang kalian bahas bersama. Selalu ingat nama pengguna jika mereka memberitahu namamu atau membicarakan nama seseorang.";
 
     function toggleSidebar() { 
@@ -438,16 +486,83 @@
         });
     }
 
+    // ADVANCED MARKDOWN PARSER + CODE HIGHLIGHTER + TOMBOL COPY
     function formatMarkdown(text) {
-        let formatted = text
-            .replace(/`([^`]+)`/g, '<code>$1</code>')
-            .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
-            .replace(/\*([^*]+)\*/g, '<i>$1</i>')
-            .replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
+        let codeBlockRegex = /```([a-zA-Z0-9 border=-]+)?([\s\S]*?)
+```/g;
+        let formatted = text.replace(codeBlockRegex, function(match, lang, code) {
+            let cleanCode = code.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            let languageClass = lang ? `language-${lang.trim()}` : 'plaintext';
+            
+            return `<div class="code-container">
+                        <button class="copy-btn" onclick="copyKodeKeClipboard(this)"><i class="fa-regular fa-clipboard"></i> Copy</button>
+                        <pre><code class="${languageClass}">${cleanCode}</code></pre>
+                    </div>`;
+        });
+
+        formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
+        formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
+        formatted = formatted.replace(/\*([^*]+)\*/g, '<i>$1</i>');
+        formatted = formatted.replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
         if (formatted.includes('<li>')) formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        
         return formatted.replace(/\n/g, '<br>');
     }
 
+    function copyKodeKeClipboard(button) {
+        const codeElement = button.nextElementSibling.querySelector('code');
+        const textToCopy = codeElement.innerText;
+        
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            button.innerHTML = `<i class="fa-solid fa-check" style="color:#10b981"></i> Copied!`;
+            setTimeout(() => { button.innerHTML = `<i class="fa-regular fa-clipboard"></i> Copy`; }, 2000);
+        }).catch(err => { console.error('Gagal copy: ', err); });
+    }
+
+    // AUDIO NATIVE VOICE TO TEXT RECOGNITION
+    function inisialisasiVoiceRecognition() {
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (window.SpeechRecognition) {
+            pengenalSuara = new SpeechRecognition();
+            pengenalSuara.continuous = false;
+            pengenalSuara.lang = 'id-ID'; // Menggunakan Bahasa Indonesia
+            pengenalSuara.interimResults = false;
+
+            pengenalSuara.onresult = function(e) {
+                const hasilSuara = e.results[0][0].transcript;
+                document.getElementById('userInputMessage').value += hasilSuara;
+                matikanStatusPerekaman();
+            };
+
+            pengenalSuara.onerror = function() { matikanStatusPerekaman(); };
+            pengenalSuara.onend = function() { matikanStatusPerekaman(); };
+        } else {
+            document.getElementById('micBtn').style.display = 'none';
+        }
+    }
+
+    function toggleVoiceInput() {
+        if (!pengenalSuara) return;
+        if (sedangMerekam) {
+            pengenalSuara.stop();
+            matikanStatusPerekaman();
+        } else {
+            try {
+                pengenalSuara.start();
+                sedangMerekam = true;
+                document.getElementById('micBtn').classList.add('recording');
+                document.getElementById('userInputMessage').placeholder = "Mendengarkan suara kamu...";
+            } catch (err) { console.error(err); }
+        }
+    }
+
+    function matikanStatusPerekaman() {
+        sedangMerekam = false;
+        document.getElementById('micBtn').classList.remove('recording');
+        document.getElementById('userInputMessage').placeholder = "Ketik pesan di sini...";
+    }
+
+    // MULTI CHAT ENGINE DATABASE
     function inisialisasiDatabaseMultiChat() {
         const localChats = localStorage.getItem('xone_multi_chats');
         const localActiveId = localStorage.getItem('xone_active_session_id');
@@ -549,6 +664,8 @@
                 msgDiv.innerHTML = `<div class="message-info">${msg.infoText}</div><div>${msg.text}</div>`;
                 chatBox.appendChild(msgDiv);
             });
+            // Jalankan highlighting untuk chat lama yang termuat
+            chatBox.querySelectorAll('pre code').forEach((el) => { hljs.highlightElement(el); });
         }
         setTimeout(() => { chatBox.scrollTo({ top: chatBox.scrollHeight }); }, 50);
     }
@@ -591,19 +708,16 @@
         }
     }
 
-    // MEMBANGUN RIWAYAT CONTEXT/MEMORI UNTUK API CALL
     function bangunPayloadRiwayat(promptTerbaru, provider) {
         let contextualMessages = [];
         
         if (provider === 'gemini') {
-            // Untuk Gemini, instruksi dimasukkan sebagai role user/model di awal chat
             contextualMessages.push({ role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] });
-            contextualMessages.push({ role: "model", parts: [{ text: "Baik, saya mengerti. Saya adalah Xone AI yang diciptakan oleh RenzzAiHost dan akan selalu mengingat memori ini beserta konteks obrolan kita." }] });
+            contextualMessages.push({ role: "model", parts: [{ text: "Baik, saya mengerti. Saya adalah Xone AI yang diciptakan oleh RenzzAiHost." }] });
             
             if (semuaSesiChat[idSesiAktif]) {
                 semuaSesiChat[idSesiAktif].messages.forEach(msg => {
-                    // Skip sisa text bawaan sistem agar memori murni dari chat user
-                    if (msg.infoText === "System Engine") return;
+                    if (msg.infoText === "System Engine" || msg.infoText === "AUTH_ERROR" || msg.infoText === "CORE_ERROR") return;
                     let cleanText = msg.text.replace(/<[^>]*>/g, ''); 
                     
                     if (msg.sender === 'user') {
@@ -615,12 +729,11 @@
             }
             contextualMessages.push({ role: "user", parts: [{ text: promptTerbaru }] });
         } else {
-            // Untuk OpenAI standard format (Groq & Mistral) menggunakan system role
             contextualMessages.push({ role: "system", content: SYSTEM_INSTRUCTION });
             
             if (semuaSesiChat[idSesiAktif]) {
                 semuaSesiChat[idSesiAktif].messages.forEach(msg => {
-                    if (msg.infoText === "System Engine") return;
+                    if (msg.infoText === "System Engine" || msg.infoText === "AUTH_ERROR" || msg.infoText === "CORE_ERROR") return;
                     let cleanText = msg.text.replace(/<[^>]*>/g, '');
                     
                     if (msg.sender === 'user') {
@@ -648,12 +761,8 @@
             userBubbleContent = `<img src="${temporaryImgUrl}" style="max-width:100%; max-height:180px; border-radius:10px; margin-bottom:6px; display:block;">${prompt}`;
         }
 
-        // Tampilkan pesan user ke layar & simpan db lokal sebelum API call
         appendMessage('user', 'Kamu', userBubbleContent);
-        
-        // Membangun memori jangka pendek sebelum pesan saat ini masuk ke database history lokal
         let payloadChat = bangunPayloadRiwayat(prompt, provider);
-        
         simpanPesanKeSesi('user', 'Kamu', userBubbleContent);
         
         textInput.value = '';
@@ -705,9 +814,31 @@
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
             }
             
+            // STREAMING TEXT / TYPING EFFECT GENERATOR
             const finalParsedText = formatMarkdown(aiText);
-            aiMessageDiv.innerHTML = `<div class="message-info">${provider.toUpperCase()} (${model})</div>` + finalParsedText;
-            simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
+            aiMessageDiv.innerHTML = `<div class="message-info">${provider.toUpperCase()} (${model})</div><div class="typing-target"></div>`;
+            const targetDiv = aiMessageDiv.querySelector('.typing-target');
+            
+            let kata = finalParsedText.split(' ');
+            let i = 0;
+            targetDiv.innerHTML = '';
+            
+            let interval = setInterval(() => {
+                if (i < kata.length) {
+                    targetDiv.innerHTML += kata[i] + ' ';
+                    i++;
+                    const chatBox = document.getElementById('chatBox');
+                    chatBox.scrollTo({ top: chatBox.scrollHeight });
+                } else {
+                    clearInterval(interval);
+                    // Trigger Highlight.js setelah selesai ngetik utuh
+                    aiMessageDiv.querySelectorAll('pre code').forEach((el) => {
+                        hljs.highlightElement(el);
+                    });
+                    simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
+                }
+            }, 30); // Durasi per kata (30ms)
+            
         } catch (error) {
             const errServerHtml = `❌ Terjadi kesalahan: ${error.message}`;
             aiMessageDiv.innerHTML = `<div class="message-info">CORE_ERROR</div>` + errServerHtml;
@@ -732,6 +863,7 @@
         switchProvider();
         muatPengaturanKonfigurasi();
         inisialisasiDatabaseMultiChat(); 
+        inisialisasiVoiceRecognition();
         
         document.getElementById('userInputMessage').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSendMessage(); });
     };

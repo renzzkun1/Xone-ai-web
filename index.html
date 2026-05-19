@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web AI Chatbot - GitHub Deploy</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Top Bar untuk Set API Key */
+        .config-bar {
+            width: 100%;
+            max-width: 600px;
+            background-color: #11111b;
+            padding: 10px 15px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-bottom: 1px solid #313244;
+        }
+
+        .config-bar input {
+            flex: 1;
+            padding: 8px;
+            background-color: #313244;
+            border: 1px solid #45475a;
+            border-radius: 4px;
+            color: #cdd6f4;
+            font-size: 0.85rem;
+        }
+
+        .config-bar button {
+            padding: 8px 12px;
+            background-color: #a6e3a1;
+            color: #11111b;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 75vh;
+            background-color: #252538;
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .chat-header {
+            background-color: #11111b;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #89b4fa;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background-color: #89b4fa;
+            color: #11111b;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .ai-message {
+            background-color: #313244;
+            color: #cdd6f4;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .chat-input-area {
+            padding: 15px;
+            background-color: #11111b;
+            display: flex;
+            gap: 10px;
+            border-top: 1px solid #313244;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            background-color: #313244;
+            border: 1px solid #45475a;
+            border-radius: 6px;
+            color: #cdd6f4;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #89b4fa;
+        }
+
+        .btn-send {
+            padding: 12px 20px;
+            background-color: #89b4fa;
+            color: #11111b;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-send:hover {
+            background-color: #b4befe;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Panel Pengaturan API Key -->
+    <div class="config-bar">
+        <input type="password" id="apiKeyInput" placeholder="Masukkan Gemini API Key Anda...">
+        <button onclick="saveApiKey()">Simpan Key</button>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">GitHub AI Chatbot</div>
+        <div class="chat-box" id="chatBox">
+            <div class="message ai-message">Halo! Masukkan API Key lo di atas dulu, baru kita ngobrol ya.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Ketik pesan di sini..." onkeypress="handleKeyPress(event)">
+            <button class="btn-send" onclick="sendMessage()">Kirim</button>
+        </div>
+    </div>
+
+    <script {nonce}>
+        const chatBox = document.getElementById('chatBox');
+        const userInput = document.getElementById('userInput');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+
+        // Cek apakah API Key sudah tersimpan di browser sebelumnya
+        window.onload = function() {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) {
+                apiKeyInput.value = savedKey;
+                appendMessage("Sistem: API Key terdeteksi secara lokal. Siap digunakan!", 'ai');
+            }
+        };
+
+        function saveApiKey() {
+            const key = apiKeyInput.value.trim();
+            if (key) {
+                localStorage.setItem('gemini_api_key', key);
+                alert("API Key berhasil disimpan di browser lo secara aman!");
+            } else {
+                localStorage.removeItem('gemini_api_key');
+                alert("API Key dihapus.");
+            }
+        }
+
+        function appendMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${sender}-message`);
+            messageDiv.innerText = text;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            // Ambil API Key dari localStorage
+            const API_KEY = localStorage.getItem('gemini_api_key');
+            if (!API_KEY) {
+                alert("Waduh, isi API Key dulu di kolom bagian atas!");
+                return;
+            }
+
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
+
+            appendMessage(text, 'user');
+            userInput.value = '';
+
+            appendMessage("Thinking...", 'ai');
+            const loadingMessage = chatBox.lastChild;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: text }] }] })
+                });
+
+                const data = await response.json();
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                loadingMessage.innerText = aiResponse;
+
+            } catch (error) {
+                console.error("Error:", error);
+                loadingMessage.innerText = "Error! Cek apakah API Key lo valid atau kuota gratisnya habis.";
+            }
+        }
+    </script>
+</body>
+</html>

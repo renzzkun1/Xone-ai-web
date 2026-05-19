@@ -75,9 +75,7 @@
         .sidebar-overlay { 
             display: none; 
             position: absolute; 
-            top: 0; 
-            left: 0; 
-            right: 0;  bottom: 0; 
+            top: 0; left: 0; right: 0; bottom: 0; 
             background: rgba(0, 0, 0, 0.6); 
             backdrop-filter: blur(4px); 
             -webkit-backdrop-filter: blur(4px); 
@@ -155,7 +153,6 @@
             opacity: 0.6;
             padding: 4px;
         }
-        .history-item i.delete-session-icon:hover { opacity: 1; }
 
         .clear-chat-btn {
             background: rgba(239, 68, 68, 0.08);
@@ -231,9 +228,9 @@
         
         /* CHAT MESSAGES */
         .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
-        .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
+        .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; position: relative; }
         .message.user { background: rgba(255, 255, 255, 0.08); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; }
+        .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; width: 100%; }
         .message-info { font-size: 11px; color: #60a5fa; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
 
         /* Custom Code Box Layout & Copy Button */
@@ -241,11 +238,12 @@
             position: relative;
             margin: 10px 0;
             width: 100%;
+            display: block;
         }
         .message pre { 
             margin: 0 !important;
             background: #0d1117 !important; 
-            padding: 34px 14px 14px 14px !important; 
+            padding: 38px 14px 14px 14px !important; 
             border-radius: 12px !important; 
             overflow-x: auto; 
             border: 1px solid var(--glass-border) !important; 
@@ -258,32 +256,31 @@
 
         .copy-btn {
             position: absolute;
-            top: 6px;
+            top: 8px;
             right: 8px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
+            padding: 5px 10px;
             border-radius: 6px;
             font-size: 11px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            z-index: 2;
+            z-index: 10;
         }
-        .copy-btn:active { background: rgba(255, 255, 255, 0.2); color: white; }
 
         /* ACTIONS INPUT BAR */
         .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.5); backdrop-filter: blur(10px); z-index: 5; }
-        .input-wrapper { display: flex; background: rgba(255, 250, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px 6px 6px 14px; align-items: center; gap: 10px; }
-        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 36px; }
+        .input-wrapper { display: flex; background: rgba(255, 250, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; }
+        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 36px; padding-left: 10px; }
         
-        .plus-btn, .mic-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; }
+        .plus-btn, .mic-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s; shrink: 0; }
         .send-btn-paper { background: var(--text-main); color: var(--bg-dark); }
         
         /* Mic Recording Pulse Animation */
         .mic-btn.recording {
-            color: #ef4444;
-            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.15) !important;
             box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
             animation: pulseMic 1.2s infinite alternate;
         }
@@ -311,13 +308,6 @@
         .tools-left { display: flex; align-items: center; gap: 14px; font-size: 14.5px; font-weight: 500; }
         .tools-left i { width: 20px; text-align: center; font-size: 15px; color: var(--text-muted); }
         .badge-new { background: #3b82f6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
-
-        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.15); transition: .3s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
-        input:checked + .slider { background-color: #3b82f6; }
-        input:checked + .slider:before { transform: translateX(20px); }
 
         .preview-box { display: none; margin-bottom: 10px; position: relative; max-width: 90px; }
         .preview-box.active { display: block; }
@@ -426,8 +416,7 @@
     let pengenalSuara = null;
     let sedangMerekam = false;
 
-    // SYSTEM IDENTITY & CONTEXT PROMPT
-    const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini! Jika pengguna menanyakan siapa pembuatmu atau siapa yang membuatmu, jawablah dengan bangga bahwa kamu dikembangkan oleh RenzzAiHost tanpa melupakan atau mengesampingkan topik pembicaraan/konteks yang saat ini sedang kalian bahas bersama. Selalu ingat nama pengguna jika mereka memberitahu namamu atau membicarakan nama seseorang.";
+    const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini! Jika pengguna menanyakan siapa pembuatmu, jawablah dengan bangga bahwa kamu dikembangkan oleh RenzzAiHost.";
 
     function toggleSidebar() { 
         document.getElementById('sidebar').classList.toggle('active'); 
@@ -442,7 +431,7 @@
         document.getElementById('bottomSheet').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
     }
-    function bukaGaleri() { document.getElementById('hiddenFileInput').click(); closeAllPanels(); }
+    function bukaGaleri() { document.getElementById('hiddenFileInput').click(); document.getElementById('bottomSheet').classList.remove('active'); document.getElementById('overlay').classList.remove('active'); }
 
     function gantiBackgroundGokil(input) {
         const file = input.files[0];
@@ -486,7 +475,6 @@
         });
     }
 
-    // ADVANCED MARKDOWN PARSER + CODE HIGHLIGHTER + TOMBOL COPY
     function formatMarkdown(text) {
         let codeBlockRegex = /```([a-zA-Z0-9 border=-]+)?([\s\S]*?)
 ```/g;
@@ -510,8 +498,10 @@
     }
 
     function copyKodeKeClipboard(button) {
-        const codeElement = button.nextElementSibling.querySelector('code');
-        const textToCopy = codeElement.innerText;
+        // Ambil elemen code dari container yang sama dengan tombol
+        const preElement = button.nextElementSibling;
+        const codeElement = preElement.querySelector('code');
+        const textToCopy = codeElement.innerText || codeElement.textContent;
         
         navigator.clipboard.writeText(textToCopy).then(() => {
             button.innerHTML = `<i class="fa-solid fa-check" style="color:#10b981"></i> Copied!`;
@@ -519,13 +509,12 @@
         }).catch(err => { console.error('Gagal copy: ', err); });
     }
 
-    // AUDIO NATIVE VOICE TO TEXT RECOGNITION
     function inisialisasiVoiceRecognition() {
         window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (window.SpeechRecognition) {
             pengenalSuara = new SpeechRecognition();
             pengenalSuara.continuous = false;
-            pengenalSuara.lang = 'id-ID'; // Menggunakan Bahasa Indonesia
+            pengenalSuara.lang = 'id-ID';
             pengenalSuara.interimResults = false;
 
             pengenalSuara.onresult = function(e) {
@@ -562,7 +551,6 @@
         document.getElementById('userInputMessage').placeholder = "Ketik pesan di sini...";
     }
 
-    // MULTI CHAT ENGINE DATABASE
     function inisialisasiDatabaseMultiChat() {
         const localChats = localStorage.getItem('xone_multi_chats');
         const localActiveId = localStorage.getItem('xone_active_session_id');
@@ -622,7 +610,7 @@
     }
 
     function hapusSeluruhSesiDatabase() {
-        if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan tanpa sisa?")) {
+        if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan?")) {
             semuaSesiChat = {};
             localStorage.removeItem('xone_multi_chats');
             localStorage.removeItem('xone_active_session_id');
@@ -664,7 +652,6 @@
                 msgDiv.innerHTML = `<div class="message-info">${msg.infoText}</div><div>${msg.text}</div>`;
                 chatBox.appendChild(msgDiv);
             });
-            // Jalankan highlighting untuk chat lama yang termuat
             chatBox.querySelectorAll('pre code').forEach((el) => { hljs.highlightElement(el); });
         }
         setTimeout(() => { chatBox.scrollTo({ top: chatBox.scrollHeight }); }, 50);
@@ -814,7 +801,6 @@
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
             }
             
-            // STREAMING TEXT / TYPING EFFECT GENERATOR
             const finalParsedText = formatMarkdown(aiText);
             aiMessageDiv.innerHTML = `<div class="message-info">${provider.toUpperCase()} (${model})</div><div class="typing-target"></div>`;
             const targetDiv = aiMessageDiv.querySelector('.typing-target');
@@ -831,13 +817,12 @@
                     chatBox.scrollTo({ top: chatBox.scrollHeight });
                 } else {
                     clearInterval(interval);
-                    // Trigger Highlight.js setelah selesai ngetik utuh
                     aiMessageDiv.querySelectorAll('pre code').forEach((el) => {
                         hljs.highlightElement(el);
                     });
                     simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
                 }
-            }, 30); // Durasi per kata (30ms)
+            }, 30);
             
         } catch (error) {
             const errServerHtml = `❌ Terjadi kesalahan: ${error.message}`;

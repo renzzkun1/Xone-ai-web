@@ -3,13 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Xone AI Dynamic Engine Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <title>NexusAI Dynamic Engine Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Library untuk Code Highlighter -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     
     <style>
         :root {
@@ -42,6 +38,7 @@
             height: 100dvh; 
             overflow: hidden; 
             position: relative; 
+            transition: background 0.5s ease;
         }
 
         .app-container { 
@@ -66,20 +63,22 @@
             top: 0; 
             left: -100%; 
             height: 100%; 
-            z-index: 200; /* Dinaikkan agar di atas overlay */
-            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1); 
+            z-index: 99; 
+            transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1); 
         }
         .sidebar.active { left: 0; }
         
-        /* OVERLAY FIXER */
         .sidebar-overlay { 
             display: none; 
             position: absolute; 
-            top: 0; left: 0; right: 0; bottom: 0; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
             background: rgba(0, 0, 0, 0.6); 
             backdrop-filter: blur(4px); 
             -webkit-backdrop-filter: blur(4px); 
-            z-index: 150; /* Di bawah posisi sidebar dan sheet aktif */
+            z-index: 98; 
         }
         .sidebar-overlay.active { display: block; }
         
@@ -94,6 +93,7 @@
             border-bottom: 1px solid var(--glass-border);
         }
 
+        /* TOMBOL NEW CHAT PREMIUM */
         .new-chat-btn {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
@@ -109,8 +109,12 @@
             transition: all 0.2s;
             margin-top: 4px;
         }
-        .new-chat-btn:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.98); }
+        .new-chat-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(0.98);
+        }
 
+        /* DAFTAR RIWAYAT SESI CHAT */
         .chat-history-list {
             display: flex;
             flex-direction: column;
@@ -129,6 +133,7 @@
             justify-content: space-between;
             background: transparent;
             color: var(--text-muted);
+            transition: background 0.2s;
         }
         .history-item.active {
             background: rgba(59, 130, 246, 0.15);
@@ -136,8 +141,20 @@
             font-weight: 500;
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
-        .history-item .chat-title-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 8px; }
-        .history-item i.delete-session-icon { font-size: 12px; color: #ef4444; opacity: 0.6; padding: 4px; }
+        .history-item .chat-title-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            margin-right: 8px;
+        }
+        .history-item i.delete-session-icon {
+            font-size: 12px;
+            color: #ef4444;
+            opacity: 0.6;
+            padding: 4px;
+        }
+        .history-item i.delete-session-icon:hover { opacity: 1; }
 
         .clear-chat-btn {
             background: rgba(239, 68, 68, 0.08);
@@ -160,8 +177,21 @@
             border-radius: 16px; 
             padding: 14px; 
         }
-        .config-card h3 { font-size: 12px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; color: #cbd5e1; }
-        label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+        .config-card h3 { 
+            font-size: 12px; 
+            font-weight: 600; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            color: #cbd5e1;
+        }
+        label { 
+            display: block; 
+            font-size: 11px; 
+            color: var(--text-muted); 
+            margin-bottom: 5px; 
+        }
         
         input[type="text"], input[type="password"], select { 
             width: 100%; 
@@ -190,71 +220,39 @@
         .save-btn { background: var(--accent-gradient); color: white; border: none; margin-bottom: 0; margin-top: 5px; }
 
         /* MAIN INTERFACE */
-        .chat-area { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; z-index: 10; }
+        .chat-area { flex: 1; display: flex; flex-direction: column; height: 100%; position: relative; }
         .chat-header { 
             height: 60px; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; padding: 0 14px; 
-            background: var(--panel-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); gap: 12px; z-index: 20; 
+            background: var(--panel-glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); gap: 12px; z-index: 5; 
         }
         .menu-toggle-btn { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; font-size: 16px; cursor: pointer; }
         .header-title-info h1 { font-size: 15px; font-weight: 600; }
         
         /* CHAT MESSAGES */
-        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; z-index: 11; }
-        .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; position: relative; }
+        .chat-messages { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; }
+        .message { display: flex; flex-direction: column; max-width: 85%; padding: 12px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-wrap: break-word; }
         .message.user { background: rgba(255, 255, 255, 0.08); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; width: 100%; }
+        .message.ai { background: transparent; color: var(--text-main); align-self: flex-start; padding-left: 0; }
         .message-info { font-size: 11px; color: #60a5fa; margin-bottom: 4px; font-weight: 700; text-transform: uppercase; }
 
-        /* Code Box Layout & Copy Button */
-        .code-container { position: relative; margin: 10px 0; width: 100%; display: block; }
-        .message pre { 
-            margin: 0 !important;
-            background: #0d1117 !important; 
-            padding: 38px 14px 14px 14px !important; 
-            border-radius: 12px !important; 
-            overflow-x: auto; 
-            border: 1px solid var(--glass-border) !important; 
-            font-family: monospace; 
-            font-size: 12.5px; 
-        }
-        .message code { font-family: monospace; font-size: 12.5px; }
-        .message :not(pre) > code { background: rgba(255,255,255,0.15); padding: 2px 5px; border-radius: 4px; }
-
-        .copy-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #e2e8f0;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            z-index: 99; /* Pastikan berada paling atas di dalam box code */
-        }
+        /* Parser AI Formatting */
+        .message pre { background: rgba(0, 0, 0, 0.4); padding: 10px; border-radius: 10px; margin: 6px 0; overflow-x: auto; border: 1px solid var(--glass-border); font-family: monospace; font-size: 12.5px; }
+        .message code { font-family: monospace; background: rgba(255,255,255,0.15); padding: 2px 5px; border-radius: 4px; font-size: 12.5px; }
+        .message ul, .message ol { margin-left: 18px; margin-top: 4px; }
 
         /* ACTIONS INPUT BAR */
-        .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 30; }
-        .input-wrapper { display: flex; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; }
-        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 38px; padding-left: 10px; }
+        .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.5); backdrop-filter: blur(10px); z-index: 5; }
+        .input-wrapper { display: flex; background: rgba(255, 250, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px 6px 6px 14px; align-items: center; gap: 10px; }
+        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 36px; }
         
-        .plus-btn, .mic-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; shrink: 0; }
+        .plus-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; }
         .send-btn-paper { background: var(--text-main); color: var(--bg-dark); }
-        
-        .mic-btn.recording {
-            color: #ef4444 !important;
-            background: rgba(239, 68, 68, 0.15) !important;
-            animation: pulseMic 1.2s infinite alternate;
-        }
-        @keyframes pulseMic { 0% { transform: scale(1); } 100% { transform: scale(1.08); } }
 
         /* PREMIUM BOTTOM SHEET MODAL */
         .bottom-sheet {
             position: absolute; bottom: -100%; left: 0; right: 0; background: var(--sheet-bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
-            padding: 8px 16px 30px 16px; z-index: 210; display: flex; flex-direction: column; gap: 16px; max-height: 75vh; overflow-y: auto;
-            transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+            padding: 8px 16px 30px 16px; z-index: 100; display: flex; flex-direction: column; gap: 16px; max-height: 75vh; overflow-y: auto;
+            transition: bottom 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
         }
         .bottom-sheet.active { bottom: 0; }
         .sheet-handle { width: 36px; height: 4px; background: rgba(255, 255, 255, 0.2); border-radius: 2px; margin: 0 auto 4px auto; }
@@ -270,6 +268,13 @@
         .tools-left i { width: 20px; text-align: center; font-size: 15px; color: var(--text-muted); }
         .badge-new { background: #3b82f6; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
 
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.15); transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: #3b82f6; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
         .preview-box { display: none; margin-bottom: 10px; position: relative; max-width: 90px; }
         .preview-box.active { display: block; }
         .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 12px; }
@@ -279,18 +284,20 @@
 <body>
 
 <div class="app-container">
-    <!-- Overlay sengaja dikasih fungsi penutup panel agar kalau diketuk di luar sidebar, panel langsung menutup -->
     <div class="sidebar-overlay" id="overlay" onclick="closeAllPanels()"></div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
-            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Xone Space</span>
+            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space</span>
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
+
         <button class="new-chat-btn" onclick="buatSesiObrolanBaru()"><i class="fa-solid fa-plus"></i> Obrolan Baru</button>
+
         <div style="font-size:12px; font-weight:600; padding:4px; color:var(--text-muted); margin-top: 8px;">Percakapan Terbaru</div>
+        
         <div class="chat-history-list" id="historyContainer"></div>
+
         <button class="clear-chat-btn" onclick="hapusSeluruhSesiDatabase()"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua Sesi</button>
         
         <div class="config-card" style="margin-top:auto">
@@ -318,18 +325,16 @@
         </div>
     </div>
 
-    <!-- MAIN CHAT FIELD -->
     <div class="chat-area">
         <div class="chat-header">
             <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
             <div class="header-title-info">
-                <h1 id="headerEngineTitle">Xone AI Workspace</h1>
+                <h1 id="headerEngineTitle">NexusAI Workspace</h1>
             </div>
         </div>
 
         <div class="chat-messages" id="chatBox"></div>
 
-        <!-- INPUT FOOTER CONTAINER (Z-INDEX DI-LOCK AMAN) -->
         <div class="chat-input-container">
             <div class="preview-box" id="imagePreviewBox">
                 <span class="close-preview" onclick="batalUnggahFoto()"><i class="fa-solid fa-xmark"></i></span>
@@ -340,12 +345,10 @@
             <div class="input-wrapper">
                 <button class="plus-btn" onclick="toggleBottomSheet()"><i class="fa-solid fa-plus"></i></button>
                 <input type="text" id="userInputMessage" placeholder="Ketik pesan di sini...">
-                <button class="mic-btn" id="micBtn" onclick="toggleVoiceInput()"><i class="fa-solid fa-microphone"></i></button>
                 <button class="send-btn-paper" onclick="handleSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <!-- BOTTOM SHEET -->
         <div class="bottom-sheet" id="bottomSheet">
             <div class="sheet-handle"></div>
             <div class="media-grid">
@@ -373,37 +376,25 @@
     };
 
     let temporaryImgUrl = '';
+    
+    // STRUKTUR MULTI CHAT DATABASE
     let semuaSesiChat = {}; 
     let idSesiAktif = '';
-    let pengenalSuara = null;
-    let sedangMerekam = false;
-
-    const SYSTEM_INSTRUCTION = "Nama kamu adalah Xone AI. Kamu dibuat oleh RenzzAiHost. JANGAN PERNAH LUPA identitas ini!";
 
     function toggleSidebar() { 
-        const sb = document.getElementById('sidebar');
-        const ov = document.getElementById('overlay');
-        sb.classList.toggle('active');
-        if(sb.classList.contains('active')) { ov.classList.add('active'); } else { ov.classList.remove('active'); }
+        document.getElementById('sidebar').classList.toggle('active'); 
+        document.getElementById('overlay').classList.toggle('active'); 
     }
-    
     function toggleBottomSheet() {
-        const bs = document.getElementById('bottomSheet');
-        const ov = document.getElementById('overlay');
-        bs.classList.toggle('active');
-        if(bs.classList.contains('active')) { ov.classList.add('active'); } else { ov.classList.remove('active'); }
+        document.getElementById('bottomSheet').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('active');
     }
-    
     function closeAllPanels() {
         document.getElementById('sidebar').classList.remove('active');
         document.getElementById('bottomSheet').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
     }
-    
-    function bukaGaleri() { 
-        document.getElementById('hiddenFileInput').click(); 
-        closeAllPanels();
-    }
+    function bukaGaleri() { document.getElementById('hiddenFileInput').click(); closeAllPanels(); }
 
     function gantiBackgroundGokil(input) {
         const file = input.files[0];
@@ -411,12 +402,11 @@
         const reader = new FileReader();
         reader.onload = function(e) {
             pasangBackground(e.target.result);
-            localStorage.setItem('xone_custom_bg', e.target.result);
+            localStorage.setItem('nexus_custom_bg', e.target.result);
             closeAllPanels();
         };
         reader.readAsDataURL(file);
     }
-    
     function pasangBackground(imgData) {
         document.body.style.background = `linear-gradient(rgba(11, 12, 20, 0.85), rgba(11, 12, 20, 0.95)), url('${imgData}') no-repeat center center`;
         document.body.style.backgroundSize = "cover"; document.body.style.backgroundAttachment = "fixed";
@@ -428,7 +418,6 @@
         document.getElementById('imagePreviewSrc').src = temporaryImgUrl;
         document.getElementById('imagePreviewBox').classList.add('active');
     }
-    
     function batalUnggahFoto() {
         temporaryImgUrl = ''; document.getElementById('imagePreviewBox').classList.remove('active');
         document.getElementById('hiddenFileInput').value = '';
@@ -450,83 +439,20 @@
     }
 
     function formatMarkdown(text) {
-        let codeBlockRegex = /```([a-zA-Z0-9 border=-]+)?([\s\S]*?)
-```/g;
-        let formatted = text.replace(codeBlockRegex, function(match, lang, code) {
-            let cleanCode = code.trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            let languageClass = lang ? `language-${lang.trim()}` : 'plaintext';
-            
-            return `<div class="code-container">
-                        <button class="copy-btn" onclick="copyKodeKeClipboard(this)"><i class="fa-regular fa-clipboard"></i> Copy</button>
-                        <pre><code class="${languageClass}">${cleanCode}</code></pre>
-                    </div>`;
-        });
-
-        formatted = formatted.replace(/`([^`]+)`/g, '<code>$1</code>');
-        formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>');
-        formatted = formatted.replace(/\*([^*]+)\*/g, '<i>$1</i>');
-        formatted = formatted.replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
+        let formatted = text
+            .replace(/`([^`]+)`/g, '<code>$1</code>')
+            .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+            .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+            .replace(/^\s*-\s+(.+)$/gm, '<li>$1</li>');
         if (formatted.includes('<li>')) formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
-        
         return formatted.replace(/\n/g, '<br>');
     }
 
-    function copyKodeKeClipboard(button) {
-        const preElement = button.nextElementSibling;
-        const codeElement = preElement.querySelector('code');
-        const textToCopy = codeElement.innerText || codeElement.textContent;
-        
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            button.innerHTML = `<i class="fa-solid fa-check" style="color:#10b981"></i> Copied!`;
-            setTimeout(() => { button.innerHTML = `<i class="fa-regular fa-clipboard"></i> Copy`; }, 2000);
-        }).catch(err => { console.error('Gagal copy: ', err); });
-    }
-
-    function inisialisasiVoiceRecognition() {
-        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (window.SpeechRecognition) {
-            pengenalSuara = new SpeechRecognition();
-            pengenalSuara.continuous = false;
-            pengenalSuara.lang = 'id-ID';
-            pengenalSuara.interimResults = false;
-
-            pengenalSuara.onresult = function(e) {
-                const hasilSuara = e.results[0][0].transcript;
-                document.getElementById('userInputMessage').value += hasilSuara;
-                matikanStatusPerekaman();
-            };
-
-            pengenalSuara.onerror = function() { matikanStatusPerekaman(); };
-            pengenalSuara.onend = function() { matikanStatusPerekaman(); };
-        } else {
-            document.getElementById('micBtn').style.display = 'none';
-        }
-    }
-
-    function toggleVoiceInput() {
-        if (!pengenalSuara) return;
-        if (sedangMerekam) {
-            pengenalSuara.stop();
-            matikanStatusPerekaman();
-        } else {
-            try {
-                pengenalSuara.start();
-                sedangMerekam = true;
-                document.getElementById('micBtn').classList.add('recording');
-                document.getElementById('userInputMessage').placeholder = "Mendengarkan suara...";
-            } catch (err) { console.error(err); }
-        }
-    }
-
-    function matikanStatusPerekaman() {
-        sedangMerekam = false;
-        document.getElementById('micBtn').classList.remove('recording');
-        document.getElementById('userInputMessage').placeholder = "Ketik pesan di sini...";
-    }
-
+    // ================= DYNAMIC MULTI-CHAT CORE ENGINE =================
+    
     function inisialisasiDatabaseMultiChat() {
-        const localChats = localStorage.getItem('xone_multi_chats');
-        const localActiveId = localStorage.getItem('xone_active_session_id');
+        const localChats = localStorage.getItem('nexus_multi_chats');
+        const localActiveId = localStorage.getItem('nexus_active_session_id');
 
         if (localChats) {
             semuaSesiChat = JSON.parse(localChats);
@@ -537,7 +463,7 @@
             idSesiAktif = 'session_' + Date.now();
             semuaSesiChat[idSesiAktif] = {
                 title: "Obrolan Baru",
-                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan Xone AI siap digunakan.' }]
+                messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Halo! Sesi obrolan baru siap digunakan. Riwayat obrolan ini akan tersimpan terpisah di sidebar kiri.' }]
             };
             simpanKeLocalStorage();
         }
@@ -550,7 +476,7 @@
         idSesiAktif = 'session_' + Date.now();
         semuaSesiChat[idSesiAktif] = {
             title: "Obrolan Baru",
-            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru.' }]
+            messages: [{ sender: 'ai', infoText: 'System Engine', text: 'Membuka lembar obrolan baru. Silakan ketik perintah apa saja.' }]
         };
         simpanKeLocalStorage();
         segarkanTampilanSidebar();
@@ -560,7 +486,7 @@
 
     function gantiSesiAktif(idSesi) {
         idSesiAktif = idSesi;
-        localStorage.setItem('xone_active_session_id', idSesiAktif);
+        localStorage.setItem('nexus_active_session_id', idSesiAktif);
         segarkanTampilanSidebar();
         tampilkanPesanSesiAktif();
         closeAllPanels();
@@ -583,17 +509,17 @@
     }
 
     function hapusSeluruhSesiDatabase() {
-        if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan?")) {
+        if(confirm("Apakah kamu yakin ingin menghapus seluruh sesi obrolan tanpa sisa?")) {
             semuaSesiChat = {};
-            localStorage.removeItem('xone_multi_chats');
-            localStorage.removeItem('xone_active_session_id');
+            localStorage.removeItem('nexus_multi_chats');
+            localStorage.removeItem('nexus_active_session_id');
             buatSesiObrolanBaru();
         }
     }
 
     function simpanKeLocalStorage() {
-        localStorage.setItem('xone_multi_chats', JSON.stringify(semuaSesiChat));
-        localStorage.setItem('xone_active_session_id', idSesiAktif);
+        localStorage.setItem('nexus_multi_chats', JSON.stringify(semuaSesiChat));
+        localStorage.setItem('nexus_active_session_id', idSesiAktif);
     }
 
     function segarkanTampilanSidebar() {
@@ -625,13 +551,13 @@
                 msgDiv.innerHTML = `<div class="message-info">${msg.infoText}</div><div>${msg.text}</div>`;
                 chatBox.appendChild(msgDiv);
             });
-            chatBox.querySelectorAll('pre code').forEach((el) => { hljs.highlightElement(el); });
         }
         setTimeout(() => { chatBox.scrollTo({ top: chatBox.scrollHeight }); }, 50);
     }
 
     function simpanPesanKeSesi(sender, infoText, text) {
         if (!semuaSesiChat[idSesiAktif]) return;
+        
         semuaSesiChat[idSesiAktif].messages.push({ sender, infoText, text });
         
         if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && sender === 'user') {
@@ -639,8 +565,11 @@
             semuaSesiChat[idSesiAktif].title = cleanText.substring(0, 22) + (cleanText.length > 22 ? '...' : '');
             segarkanTampilanSidebar();
         }
+        
         simpanKeLocalStorage();
     }
+
+    // ====================================================================
 
     function simpanPengaturanKonfigurasi() {
         const config = {
@@ -650,11 +579,11 @@
             geminiKey: document.getElementById('sidebarGeminiKey').value,
             mistralKey: document.getElementById('sidebarMistralKey').value
         };
-        localStorage.setItem('xone_engine_config', JSON.stringify(config));
+        localStorage.setItem('nexus_engine_config', JSON.stringify(config));
     }
 
     function muatPengaturanKonfigurasi() {
-        const savedConfig = localStorage.getItem('xone_engine_config');
+        const savedConfig = localStorage.getItem('nexus_engine_config');
         if(savedConfig) {
             const config = JSON.parse(savedConfig);
             document.getElementById('activeProvider').value = config.provider;
@@ -664,36 +593,6 @@
             document.getElementById('sidebarGeminiKey').value = config.geminiKey || '';
             document.getElementById('sidebarMistralKey').value = config.mistralKey || '';
         }
-    }
-
-    function bangunPayloadRiwayat(promptTerbaru, provider) {
-        let contextualMessages = [];
-        if (provider === 'gemini') {
-            contextualMessages.push({ role: "user", parts: [{ text: SYSTEM_INSTRUCTION }] });
-            contextualMessages.push({ role: "model", parts: [{ text: "Siap dimengerti." }] });
-            
-            if (semuaSesiChat[idSesiAktif]) {
-                semuaSesiChat[idSesiAktif].messages.forEach(msg => {
-                    if (msg.infoText === "System Engine" || msg.infoText === "AUTH_ERROR" || msg.infoText === "CORE_ERROR") return;
-                    let cleanText = msg.text.replace(/<[^>]*>/g, ''); 
-                    if (msg.sender === 'user') contextualMessages.push({ role: "user", parts: [{ text: cleanText }] });
-                    else if (msg.sender === 'ai') contextualMessages.push({ role: "model", parts: [{ text: cleanText }] });
-                });
-            }
-            contextualMessages.push({ role: "user", parts: [{ text: promptTerbaru }] });
-        } else {
-            contextualMessages.push({ role: "system", content: SYSTEM_INSTRUCTION });
-            if (semuaSesiChat[idSesiAktif]) {
-                semuaSesiChat[idSesiAktif].messages.forEach(msg => {
-                    if (msg.infoText === "System Engine" || msg.infoText === "AUTH_ERROR" || msg.infoText === "CORE_ERROR") return;
-                    let cleanText = msg.text.replace(/<[^>]*>/g, '');
-                    if (msg.sender === 'user') contextualMessages.push({ role: "user", content: cleanText });
-                    else if (msg.sender === 'ai') contextualMessages.push({ role: "assistant", content: cleanText });
-                });
-            }
-            contextualMessages.push({ role: "user", content: promptTerbaru });
-        }
-        return contextualMessages;
     }
 
     async function handleSendMessage() {
@@ -710,7 +609,6 @@
         }
 
         appendMessage('user', 'Kamu', userBubbleContent);
-        let payloadChat = bangunPayloadRiwayat(prompt, provider);
         simpanPesanKeSesi('user', 'Kamu', userBubbleContent);
         
         textInput.value = '';
@@ -732,57 +630,32 @@
 
         try {
             let response, data, aiText = '';
-            
             if (provider === 'groq') {
                 response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: model, messages: payloadChat })
+                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
                 });
                 data = await response.json();
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
-                
             } else if (provider === 'gemini') {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
-                response = await fetch(url, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ contents: payloadChat }) 
-                });
+                response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }) });
                 data = await response.json();
                 if(response.ok) aiText = data.candidates[0].content.parts[0].text; else throw new Error(data.error?.message);
-                
             } else if (provider === 'mistral') {
                 response = await fetch('https://api.mistral.ai/v1/chat/completions', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ model: model, messages: payloadChat })
+                    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify({ model: model, messages: [{ role: "user", content: prompt }] })
                 });
                 data = await response.json();
-                if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
+                if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message || data.message);
             }
             
             const finalParsedText = formatMarkdown(aiText);
-            aiMessageDiv.innerHTML = `<div class="message-info">${provider.toUpperCase()} (${model})</div><div class="typing-target"></div>`;
-            const targetDiv = aiMessageDiv.querySelector('.typing-target');
-            
-            let kata = finalParsedText.split(' ');
-            let i = 0;
-            targetDiv.innerHTML = '';
-            
-            let interval = setInterval(() => {
-                if (i < kata.length) {
-                    targetDiv.innerHTML += kata[i] + ' ';
-                    i++;
-                    const chatBox = document.getElementById('chatBox');
-                    chatBox.scrollTo({ top: chatBox.scrollHeight });
-                } else {
-                    clearInterval(interval);
-                    aiMessageDiv.querySelectorAll('pre code').forEach((el) => { hljs.highlightElement(el); });
-                    simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
-                }
-            }, 30);
-            
+            aiMessageDiv.innerHTML = `<div class="message-info">${provider.toUpperCase()} (${model})</div>` + finalParsedText;
+            simpanPesanKeSesi('ai', `${provider.toUpperCase()} (${model})`, finalParsedText);
         } catch (error) {
             const errServerHtml = `❌ Terjadi kesalahan: ${error.message}`;
             aiMessageDiv.innerHTML = `<div class="message-info">CORE_ERROR</div>` + errServerHtml;
@@ -801,13 +674,12 @@
     }
 
     window.onload = function() {
-        const savedBg = localStorage.getItem('xone_custom_bg');
+        const savedBg = localStorage.getItem('nexus_custom_bg');
         if (savedBg) pasangBackground(savedBg);
         
         switchProvider();
         muatPengaturanKonfigurasi();
         inisialisasiDatabaseMultiChat(); 
-        inisialisasiVoiceRecognition();
         
         document.getElementById('userInputMessage').addEventListener('keydown', function(e) { if (e.key === 'Enter') handleSendMessage(); });
     };

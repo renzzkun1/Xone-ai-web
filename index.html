@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NexusAI Dynamic Engine Pro V3 - Absolute Fix</title>
+    <title>NexusAI Dynamic Engine Pro V4 - Stable Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -214,11 +214,11 @@
 
         /* ACTIONS INPUT BAR */
         .chat-input-container { padding: 10px 14px; background: rgba(11, 12, 20, 0.7); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 5; }
-        .input-wrapper { display: flex; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; }
-        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 38px; padding-left: 10px; }
+        .input-wrapper { display: flex; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--glass-border); border-radius: 28px; padding: 6px; align-items: center; gap: 8px; width: 100%; }
+        .input-wrapper input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 14px; height: 38px; padding-left: 10px; min-width: 0; }
         
-        .plus-btn, .send-btn-paper { background: transparent; border: none; color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: transform 0.1s; }
-        .send-btn-paper { background: var(--text-main); color: var(--bg-dark); }
+        .plus-btn { background: transparent; border: none; color: var(--text-main); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; flex-shrink: 0; }
+        .send-btn-paper { background: var(--text-main); color: var(--bg-dark); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; transition: transform 0.1s; flex-shrink: 0; border: none; }
         .plus-btn:active, .send-btn-paper:active { transform: scale(0.9); }
 
         /* PREMIUM BOTTOM SHEET MODAL */
@@ -250,13 +250,11 @@
 <body>
 
 <div class="app-container">
-    <!-- OVERLAY UTAMA -->
     <div class="sidebar-overlay" id="overlay"></div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
-            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space v3</span>
+            <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space v4</span>
             <button type="button" class="menu-toggle-btn" id="closeSidebarXBtn"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
@@ -301,7 +299,6 @@
             </div>
         </div>
 
-        <!-- MODE CONTROLLER -->
         <div class="mode-container">
             <button type="button" class="mode-pill active" data-mode="normal"><i class="fa-solid fa-message"></i> AI Normal Chat</button>
             <button type="button" class="mode-pill" data-mode="roblox"><i class="fa-solid fa-gamepad"></i> Roblox Studio Expert</button>
@@ -326,7 +323,6 @@
             </div>
         </div>
 
-        <!-- BOTTOM SHEET -->
         <div class="bottom-sheet" id="bottomSheet">
             <div class="sheet-handle"></div>
             <div class="media-grid">
@@ -364,7 +360,6 @@
         coding: "Kamu adalah Software Engineer Senior. Berikan arsitektur kode pemrograman terbaik, bersih (Clean Code), tangani error handling dengan baik."
     };
 
-    // MANAGEMENT PANEL INTERFACE (PURE JS EVENT LISTENERS WITH STOP PROPAGATION)
     function openSidebar() {
         document.getElementById('sidebar').classList.add('active');
         document.getElementById('overlay').classList.add('active');
@@ -380,61 +375,28 @@
     }
 
     function bindingCoreUserInteractions() {
-        // Overlay Click
-        document.getElementById('overlay').addEventListener('click', function(e) {
-            closeAllPanels();
-        });
+        document.getElementById('overlay').addEventListener('click', function() { closeAllPanels(); });
+        document.getElementById('menuToggleBarBtn').addEventListener('click', function(e) { e.stopPropagation(); openSidebar(); });
+        document.getElementById('closeSidebarXBtn').addEventListener('click', function(e) { e.stopPropagation(); closeAllPanels(); });
+        document.getElementById('plusMenuBtn').addEventListener('click', function(e) { e.stopPropagation(); openBottomSheet(); });
 
-        // Toggle Buttons Header & Sidebar
-        document.getElementById('menuToggleBarBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); openSidebar();
-        });
-        document.getElementById('closeSidebarXBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); closeAllPanels();
-        });
-        document.getElementById('plusMenuBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); openBottomSheet();
-        });
-
-        // Bottom Sheet Media & Tools Click Handler Fix
-        document.getElementById('mediaKameraBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); document.getElementById('hiddenFileInput').click(); closeAllPanels();
-        });
-        document.getElementById('mediaGaleriBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); document.getElementById('hiddenFileInput').click(); closeAllPanels();
-        });
+        document.getElementById('mediaKameraBtn').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('hiddenFileInput').click(); closeAllPanels(); });
+        document.getElementById('mediaGaleriBtn').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('hiddenFileInput').click(); closeAllPanels(); });
         document.getElementById('mediaFileBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('File Dokumen!'); });
         document.getElementById('mediaDriveBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Google Drive Terhubung!'); });
         document.getElementById('toolDrawBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Fitur Gambar Siap Diintegrasi!'); });
         document.getElementById('toolMusicBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Fitur Musik Siap Diintegrasi!'); });
         document.getElementById('toolResearchBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('Deep Research diaktifkan!'); });
 
-        // Action Operational Sesi Chat
-        document.getElementById('newChatSessionBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); buatSesiObrolanBaru();
-        });
-        document.getElementById('clearAllDatabaseBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); hapusSeluruhSesiDatabase();
-        });
-        document.getElementById('triggerBgFileBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); document.getElementById('bgFileInput').click();
-        });
-        document.getElementById('applyConfigurationBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); simpanPengaturanKonfigurasi(); alert('Parameter API & Model disimpan!'); closeAllPanels();
-        });
-        document.getElementById('cancelImageUploadBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); batalUnggahFoto();
-        });
-        document.getElementById('sendPayloadBtn').addEventListener('click', function(e) {
-            e.stopPropagation(); handleSendMessage();
-        });
+        document.getElementById('newChatSessionBtn').addEventListener('click', function(e) { e.stopPropagation(); buatSesiObrolanBaru(); });
+        document.getElementById('clearAllDatabaseBtn').addEventListener('click', function(e) { e.stopPropagation(); hapusSeluruhSesiDatabase(); });
+        document.getElementById('triggerBgFileBtn').addEventListener('click', function(e) { e.stopPropagation(); document.getElementById('bgFileInput').click(); });
+        document.getElementById('applyConfigurationBtn').addEventListener('click', function(e) { e.stopPropagation(); simpanPengaturanKonfigurasi(); alert('Parameter API & Model disimpan!'); closeAllPanels(); });
+        document.getElementById('cancelImageUploadBtn').addEventListener('click', function(e) { e.stopPropagation(); batalUnggahFoto(); });
+        document.getElementById('sendPayloadBtn').addEventListener('click', function(e) { e.stopPropagation(); handleSendMessage(); });
 
-        // Provider Select Handler
-        document.getElementById('activeProvider').addEventListener('change', function() {
-            switchProvider();
-        });
+        document.getElementById('activeProvider').addEventListener('change', function() { switchProvider(); });
 
-        // Mode Pill Buttons Handler
         document.querySelectorAll('.mode-pill').forEach(pill => {
             pill.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -578,9 +540,7 @@
             const itemDiv = document.createElement('div');
             itemDiv.className = `history-item ${id === idSesiAktif ? 'active' : ''}`;
             
-            // Re-binding event click aman via script bukan inline attribute HTML
             itemDiv.addEventListener('click', function() { gantiSesiAktif(id); });
-
             itemDiv.innerHTML = `
                 <span class="chat-title-text"><i class="fa-regular fa-comment" style="margin-right:8px"></i> ${sesi.title}</span>
                 <i class="fa-solid fa-trash-can delete-session-icon"></i>
@@ -589,7 +549,6 @@
             itemDiv.querySelector('.delete-session-icon').addEventListener('click', function(e) {
                 hapusSesiTertentu(id, e);
             });
-
             container.appendChild(itemDiv);
         });
     }
@@ -611,9 +570,13 @@
 
     function simpanPesanKeSesi(role, infoText, text, rawContent = '') {
         if (!semuaSesiChat[idSesiAktif]) return;
-        semuaSesiChat[idSesiAktif].messages.push({ role, infoText, text, rawContent: rawContent || text });
         
-        if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && role === 'user') {
+        // AMANKAN ROLE: Pastikan role murni bernilai 'user' atau 'assistant' agar tidak merusak payload API
+        let cleanRole = (role === 'user') ? 'user' : 'assistant';
+        
+        semuaSesiChat[idSesiAktif].messages.push({ role: cleanRole, infoText, text, rawContent: rawContent || text });
+        
+        if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && cleanRole === 'user') {
             let cleanText = text.replace(/<[^>]*>/g, '');
             semuaSesiChat[idSesiAktif].title = cleanText.substring(0, 22) + (cleanText.length > 22 ? '...' : '');
             segarkanTampilanSidebar();
@@ -621,12 +584,14 @@
         simpanKeLocalStorage();
     }
 
+    // FIX ABSOLUTE: Penyaringan ketat memori payload agar terbebas dari bad request discriminator 'role'
     function bangunPayloadMemoriSesi() {
         let kontexMemori = [{ role: "system", content: systemPrompts[currentAIMode] }];
         if (semuaSesiChat[idSesiAktif]) {
             let pesanSesi = semuaSesiChat[idSesiAktif].messages.slice(-12);
             pesanSesi.forEach(m => {
-                if(m.infoText !== 'System Engine') {
+                // Saring ketat hanya kirim properti role yang valid ke server API
+                if(m.role === 'user' || m.role === 'assistant') {
                     kontexMemori.push({ role: m.role, content: m.rawContent || m.text });
                 }
             });

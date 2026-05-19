@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>NexusAI Dynamic Engine Pro V2</title>
+    <title>NexusAI Dynamic Engine Pro V2 - Fix Button</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -137,7 +137,7 @@
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
         .history-item .chat-title-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; margin-right: 8px; }
-        .history-item i.delete-session-icon { font-size: 12px; color: #ef4444; opacity: 0.6; padding: 4px; z-index: 10; }
+        .history-item i.delete-session-icon { font-size: 12px; color: #ef4444; opacity: 0.6; padding: 4px; z-index: 10; cursor: pointer; }
         .history-item i.delete-session-icon:hover { opacity: 1; }
 
         .clear-chat-btn {
@@ -194,19 +194,19 @@
         .message code { font-family: monospace; background: rgba(255,255,255,0.15); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #f43f5e; }
         .message ul, .message ol { margin-left: 20px; margin-top: 6px; }
 
-        /* NEW KEREEN: AI MODE CONTROLLER */
+        /* AI MODE CONTROLLER */
         .mode-container {
             display: flex; gap: 8px; padding: 6px 14px; background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--glass-border); overflow-x: auto; scrollbar-width: none;
         }
         .mode-container::-webkit-scrollbar { display: none; }
         .mode-pill {
-            padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
+            padding: 8px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
         }
         .mode-pill.active[data-mode="normal"] { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: #3b82f6; }
         .mode-pill.active[data-mode="roblox"] { background: rgba(249, 115, 22, 0.15); color: #fb923c; border-color: #f97316; }
         .mode-pill.active[data-mode="coding"] { background: rgba(168, 85, 247, 0.15); color: #c084fc; border-color: #a855f7; }
 
-        /* NEW KEREN: GLOWING WAVE LOADING ANIMATION */
+        /* GLOWING WAVE LOADING ANIMATION */
         .glow-loading {
             display: none; height: 3px; width: 100%; background: linear-gradient(90deg, #3b82f6, #a855f7, #3b82f6); background-size: 200% 100%; animation: glowMove 1.5s linear infinite; margin-bottom: 2px;
         }
@@ -232,7 +232,7 @@
         .sheet-section-title { font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 6px; }
 
         .media-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .media-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+        .media-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; padding: 4px 0; }
         .media-icon-wrapper { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center; font-size: 16px; color: #cbd5e1; }
 
         .tools-list { display: flex; flex-direction: column; gap: 2px; }
@@ -255,20 +255,20 @@
     <div class="sidebar" id="sidebar">
         <div class="logo-area">
             <span><i class="fa-solid fa-cube" style="color:var(--accent-purple); margin-right: 6px;"></i> Nexus Space v2</span>
-            <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+            <button type="button" class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <button class="new-chat-btn" onclick="buatSesiObrolanBaru()"><i class="fa-solid fa-plus"></i> Obrolan Baru</button>
+        <button type="button" class="new-chat-btn" onclick="buatSesiObrolanBaru()"><i class="fa-solid fa-plus"></i> Obrolan Baru</button>
 
         <div style="font-size:12px; font-weight:600; padding:4px; color:var(--text-muted); margin-top: 8px;">Percakapan Terbaru</div>
         
         <div class="chat-history-list" id="historyContainer"></div>
 
-        <button class="clear-chat-btn" onclick="hapusSeluruhSesiDatabase()"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua Sesi</button>
+        <button type="button" class="clear-chat-btn" onclick="hapusSeluruhSesiDatabase()"><i class="fa-solid fa-trash-can"></i> Bersihkan Semua Sesi</button>
         
         <div class="config-card" style="margin-top:auto">
             <h3><i class="fa-solid fa-palette"></i> Tampilan Background</h3>
-            <button class="bg-picker-btn" onclick="document.getElementById('bgFileInput').click()"><i class="fa-solid fa-image"></i> Pilih Foto dari HP</button>
+            <button type="button" class="bg-picker-btn" onclick="document.getElementById('bgFileInput').click()"><i class="fa-solid fa-image"></i> Pilih Foto dari HP</button>
             <input type="file" id="bgFileInput" accept="image/*" style="display: none;" onchange="gantiBackgroundGokil(this)">
         </div>
 
@@ -287,23 +287,23 @@
             <div id="input-gemini-group" style="display:none;"><label>Gemini API Key:</label><input type="password" id="sidebarGeminiKey" placeholder="AIzaSy..." oninput="simpanPengaturanKonfigurasi()"></div>
             <div id="input-mistral-group" style="display:none;"><label>Mistral API Key:</label><input type="password" id="sidebarMistralKey" placeholder="la_..." oninput="simpanPengaturanKonfigurasi()"></div>
             
-            <button class="save-btn" onclick="simpanPengaturanKonfigurasi(); alert('Parameter API & Model disimpan!'); closeAllPanels();">Terapkan Parameter</button>
+            <button type="button" class="save-btn" onclick="simpanPengaturanKonfigurasi(); alert('Parameter API & Model disimpan!'); closeAllPanels();">Terapkan Parameter</button>
         </div>
     </div>
 
     <div class="chat-area">
         <div class="chat-header">
-            <button class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <button type="button" class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
             <div class="header-title-info">
                 <h1 id="headerEngineTitle">NexusAI Workspace</h1>
             </div>
         </div>
 
-        <!-- NEW AI ENGINE MODE CONTROLLER -->
+        <!-- AI ENGINE MODE CONTROLLER -->
         <div class="mode-container">
-            <div class="mode-pill active" data-mode="normal" onclick="switchAIMode('normal')"><i class="fa-solid fa-message"></i> AI Normal Chat</div>
-            <div class="mode-pill" data-mode="roblox" onclick="switchAIMode('roblox')"><i class="fa-solid fa-gamepad"></i> Roblox Studio Expert</div>
-            <div class="mode-pill" data-mode="coding" onclick="switchAIMode('coding')"><i class="fa-solid fa-code"></i> Coding Program</div>
+            <button type="button" class="mode-pill active" data-mode="normal" onclick="switchAIMode('normal')"><i class="fa-solid fa-message"></i> AI Normal Chat</button>
+            <button type="button" class="mode-pill" data-mode="roblox" onclick="switchAIMode('roblox')"><i class="fa-solid fa-gamepad"></i> Roblox Studio Expert</button>
+            <button type="button" class="mode-pill" data-mode="coding" onclick="switchAIMode('coding')"><i class="fa-solid fa-code"></i> Coding Program</button>
         </div>
 
         <div class="chat-messages" id="chatBox"></div>
@@ -319,9 +319,9 @@
             <input type="file" id="hiddenFileInput" accept="image/*" style="display: none;" onchange="prosesFileFoto(this)">
 
             <div class="input-wrapper">
-                <button class="plus-btn" onclick="toggleBottomSheet()"><i class="fa-solid fa-plus"></i></button>
+                <button type="button" class="plus-btn" onclick="toggleBottomSheet()"><i class="fa-solid fa-plus"></i></button>
                 <input type="text" id="userInputMessage" placeholder="Ketik pesan di sini...">
-                <button class="send-btn-paper" onclick="handleSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                <button type="button" class="send-btn-paper" onclick="handleSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
             </div>
         </div>
 
@@ -354,9 +354,8 @@
     let temporaryImgUrl = '';
     let semuaSesiChat = {}; 
     let idSesiAktif = '';
-    let currentAIMode = 'normal'; // default mode
+    let currentAIMode = 'normal';
 
-    // SYSTEM INSTRUCTIONS UNTUK TIAP MODE
     const systemPrompts = {
         normal: "Kamu adalah NexusAI, asisten AI pintar, interaktif, ramah, dan sangat membantu.",
         roblox: "Kamu adalah Expert Game Developer Roblox Studio. Berikan kode script Luau yang bersih, efisien, jelaskan sistem grinding, crafting, dataStore, atau kustomisasi part secara mendalam sesuai standar industri Roblox.",
@@ -376,14 +375,20 @@
         document.getElementById('bottomSheet').classList.remove('active');
         document.getElementById('overlay').classList.remove('active');
     }
-    function bukaGaleri() { document.getElementById('hiddenFileInput').click(); closeAllPanels(); }
+    
+    // FIX KLIK: Jalankan buka galeri tanpa ke-interupsi penutupan panel berbarengan
+    function bukaGaleri() { 
+        document.getElementById('hiddenFileInput').click(); 
+        setTimeout(closeAllPanels, 300);
+    }
 
     function switchAIMode(mode) {
         currentAIMode = mode;
         document.querySelectorAll('.mode-pill').forEach(pill => {
             pill.classList.remove('active');
         });
-        document.querySelector(`.mode-pill[data-mode="${mode}"]`).classList.add('active');
+        const activePill = document.querySelector(`.mode-pill[data-mode="${mode}"]`);
+        if (activePill) activePill.classList.add('active');
     }
 
     function gantiBackgroundGokil(input) {
@@ -428,7 +433,6 @@
     }
 
     function formatMarkdown(text) {
-        // Gabungan parser markdown sederhana untuk kode blok pre, inline code, bold, italic, list
         let formatted = text
             .replace(/```([\s\S]*?)
 ```/g, '<pre><code>$1</code></pre>')
@@ -439,8 +443,6 @@
         if (formatted.includes('<li>')) formatted = formatted.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
         return formatted.replace(/\n/g, '<br>');
     }
-
-    // ================= MULTI-CHAT CORE ENGINE + SHORT MEMORY INTEGRATION =================
     
     function inisialisasiDatabaseMultiChat() {
         const localChats = localStorage.getItem('nexus_multi_chats');
@@ -551,7 +553,6 @@
     function simpanPesanKeSesi(role, infoText, text, rawContent = '') {
         if (!semuaSesiChat[idSesiAktif]) return;
         
-        // Simpan text mentah untuk diumpankan ke API memori agar HTML-nya tidak ikut terkirim
         semuaSesiChat[idSesiAktif].messages.push({ role, infoText, text, rawContent: rawContent || text });
         
         if (semuaSesiChat[idSesiAktif].title === "Obrolan Baru" && role === 'user') {
@@ -562,18 +563,13 @@
         simpanKeLocalStorage();
     }
 
-    // MEMBANGUN STRUKTUR MEMORI UNTUK KONTEKS API (MEMBUAT AI INGAT CHAT SEBELUMNYA)
     function bangunPayloadMemoriSesi(promptSelesai) {
         let kontexMemori = [];
-        
-        // Tambahkan Aturan Main / System Prompt berdasarkan Mode yang Dipilih
         kontexMemori.push({ role: "system", content: systemPrompts[currentAIMode] });
 
         if (semuaSesiChat[idSesiAktif]) {
-            // Batasi ambil 12 baris pesan terakhir agar hemat token tapi memori tetap tajam
             let pesanSesi = semuaSesiChat[idSesiAktif].messages.slice(-12);
             pesanSesi.forEach(m => {
-                // Jangan masukkan pesan sistem pembuka bawaan lokal
                 if(m.infoText !== 'System Engine') {
                     kontexMemori.push({
                         role: m.role,
@@ -584,8 +580,6 @@
         }
         return kontexMemori;
     }
-
-    // ====================================================================
 
     function simpanPengaturanKonfigurasi() {
         const config = {
@@ -625,14 +619,12 @@
             userBubbleContent = `<img src="${temporaryImgUrl}" style="max-width:100%; max-height:180px; border-radius:10px; margin-bottom:6px; display:block;">${prompt}`;
         }
 
-        // Tampilkan ke layar UI & Simpan ke database Lokal
         appendMessage('user', 'Kamu', userBubbleContent);
         simpanPesanKeSesi('user', 'Kamu', userBubbleContent, prompt);
         
         textInput.value = '';
         batalUnggahFoto();
 
-        // Aktifkan Efek Glowing Wave Loading
         loadingLine.style.display = 'block';
         const aiMessageDiv = appendMessage('ai', provider.toUpperCase() + " ENGINE", 'Sedang menganalisis konteks...');
         
@@ -649,7 +641,6 @@
             return;
         }
 
-        // Susun payload pesan terstruktur yang membawa memori percakapan lama
         const paketPesanBermemori = bangunPayloadMemoriSesi(prompt);
 
         try {
@@ -665,7 +656,6 @@
                 if(response.ok) aiText = data.choices[0].message.content; else throw new Error(data.error?.message);
                 
             } else if (provider === 'gemini') {
-                // Konversi format OpenAI ke format Chat Google Gemini agar memori bekerja sempurna
                 let geminiContents = paketPesanBermemori.filter(m => m.role !== 'system').map(m => {
                     return {
                         role: m.role === 'assistant' ? 'model' : 'user',
@@ -699,14 +689,13 @@
             const headerLabel = `${provider.toUpperCase()} (${currentAIMode.toUpperCase()})`;
             aiMessageDiv.innerHTML = `<div class="message-info">${headerLabel}</div>` + finalParsedText;
             
-            // Simpan respon AI ke memori database lokal
             simpanPesanKeSesi('assistant', headerLabel, finalParsedText, aiText);
         } catch (error) {
             const errServerHtml = `❌ Terjadi kesalahan: ${error.message}`;
             aiMessageDiv.innerHTML = `<div class="message-info">CORE_ERROR</div>` + errServerHtml;
             simpanPesanKeSesi('assistant', 'CORE_ERROR', errServerHtml);
         } finally {
-            loadingLine.style.display = 'none'; // Matikan loading wave
+            loadingLine.style.display = 'none';
         }
     }
 
@@ -733,4 +722,4 @@
 </script>
 </body>
 </html>
-	
+
